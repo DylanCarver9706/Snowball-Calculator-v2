@@ -35,7 +35,7 @@ function getDefaultBill(): Bill {
   };
 }
 
-export default function SnowballCalculator(): JSX.Element {
+export function SnowballCalculator() {
   const { user, isLoaded } = useUser();
   const [monthlyContribution, setMonthlyContribution] = useState<number>(100);
   const [bills, setBills] = useState<Bill[]>([]);

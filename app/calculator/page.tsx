@@ -1,7 +1,7 @@
 "use client";
 
 import { Container, Typography, Box } from "@mui/material";
-import SnowballCalculator from "@/components/SnowballCalculator";
+import { SnowballCalculator } from "@/components/SnowballCalculator";
 
 export default function CalculatorPage() {
   return (

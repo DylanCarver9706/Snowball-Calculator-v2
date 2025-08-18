@@ -689,7 +689,13 @@ export function SnowballCalculator() {
                                 <Typography variant="body2">
                                   Pay: ${monthData.payment.toFixed(2)}
                                 </Typography>
-                                <Tooltip title={monthData.info} placement="top">
+                                <Tooltip
+                                  title={monthData.info}
+                                  placement="top"
+                                  enterTouchDelay={0}
+                                  leaveTouchDelay={2000}
+                                  arrow
+                                >
                                   <Typography
                                     variant="body2"
                                     sx={{

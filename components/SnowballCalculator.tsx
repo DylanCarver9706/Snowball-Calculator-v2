@@ -52,8 +52,8 @@ export function SnowballCalculator() {
   useEffect(() => {
     if (isLoaded && user) {
       const metadata = user.publicMetadata as any;
-      if (metadata?.monthlyContribution && metadata?.bills) {
-        setMonthlyContribution(metadata.monthlyContribution);
+      if (parseInt(metadata?.monthlyContribution) >= 0 && metadata?.bills) {
+        setMonthlyContribution(parseInt(metadata.monthlyContribution));
         setBills(metadata.bills);
       } else {
         // Seed with sample debts
@@ -729,13 +729,6 @@ export function SnowballCalculator() {
                                   </Typography>
                                 </Tooltip>
                               </Stack>
-                              <Typography
-                                variant="caption"
-                                color="text.secondary"
-                              >
-                                Balance: $
-                                {monthData.remainingBalance.toFixed(2)}
-                              </Typography>
                               <Stack
                                 direction="row"
                                 spacing={{ xs: 0.5, sm: 1 }}
@@ -754,16 +747,22 @@ export function SnowballCalculator() {
                                 >
                                   Interest: ${monthData.interestPaid.toFixed(2)}
                                 </Typography>
-                                {monthData.rollover > 0 && (
+                              </Stack>
+                              <Typography
+                                variant="caption"
+                              >
+                                Remaining Balance: $
+                                {monthData.remainingBalance.toFixed(2)}
+                              </Typography>
+                              {monthData.rollover > 0 && (
                                   <Typography
                                     variant="caption"
                                     color="warning.main"
                                     fontWeight={600}
                                   >
-                                    Rollover: ${monthData.rollover.toFixed(2)}
+                                    <br></br>Rollover: ${monthData.rollover.toFixed(2)}
                                   </Typography>
                                 )}
-                              </Stack>
                             </Box>
                           ) : null}
                         </TableCell>

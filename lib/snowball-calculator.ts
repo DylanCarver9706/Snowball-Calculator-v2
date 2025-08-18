@@ -102,7 +102,7 @@ export function calculateSnowball(
       // Build info string
       infoParts.push(minPart, freedPart, rolloverPart, snowballPart);
       infoParts = infoParts.filter(Boolean);
-      let info = `Paid = ${infoParts.join("")}`;
+      let info = `Pay = ${infoParts.join("")}`;
       if (thisRollover > 0) {
         info += `. Rollover $${thisRollover.toFixed(
           2

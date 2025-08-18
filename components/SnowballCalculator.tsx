@@ -580,7 +580,26 @@ export function SnowballCalculator() {
           }}
         >
           <Box sx={{ overflow: "auto", maxHeight: 800 }}>
-            <Table sx={{ minWidth: 800 }} size="small" stickyHeader>
+            <Table
+              size="small"
+              stickyHeader
+              sx={{
+                minWidth: { xs: 600, sm: 800 },
+                "& .MuiTableCell-root": {
+                  padding: { xs: "4px 6px", sm: "8px 16px" },
+                  fontSize: { xs: 12, sm: "inherit" },
+                },
+                "& .MuiTypography-body2": {
+                  fontSize: { xs: 12, sm: 14 },
+                },
+                "& .MuiTypography-caption": {
+                  fontSize: { xs: 10, sm: 12 },
+                },
+                "& .MuiTypography-subtitle2": {
+                  fontSize: { xs: 12, sm: 14 },
+                },
+              }}
+            >
               <TableHead
                 sx={{
                   "& .MuiTableCell-head": {
@@ -599,8 +618,10 @@ export function SnowballCalculator() {
                       background:
                         "linear-gradient(135deg, rgb(102,126,234) 0%, rgb(71,94,194) 100%)",
                       zIndex: 2,
-                      minWidth: 100,
+                      minWidth: { xs: 80, sm: 100 },
+                      fontSize: { xs: 12 },
                       color: "#ffffff",
+
                       align: "center",
                       textAlign: "center",
                     }}
@@ -618,7 +639,7 @@ export function SnowballCalculator() {
                       </Typography>
                       <Stack
                         direction="row"
-                        spacing={1}
+                        spacing={{ xs: 0.5, sm: 1 }}
                         justifyContent="center"
                       >
                         <Typography variant="caption">
@@ -644,7 +665,8 @@ export function SnowballCalculator() {
                         left: 0,
                         background: "#eef2ff",
                         zIndex: 1,
-                        minWidth: 100,
+                        minWidth: { xs: 80, sm: 100 },
+                        fontSize: { xs: 12 },
                         color: "#1e293b",
                         textAlign: "center",
                         align: "center",
@@ -716,7 +738,7 @@ export function SnowballCalculator() {
                               </Typography>
                               <Stack
                                 direction="row"
-                                spacing={1}
+                                spacing={{ xs: 0.5, sm: 1 }}
                                 justifyContent="center"
                               >
                                 <Typography

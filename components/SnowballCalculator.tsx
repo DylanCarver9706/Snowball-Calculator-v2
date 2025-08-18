@@ -208,8 +208,7 @@ export function SnowballCalculator() {
 
   if (!user) {
     return (
-      <Box sx={{ display: "flex", justifyContent: "center", py: 8 }}>
-      </Box>
+      <Box sx={{ display: "flex", justifyContent: "center", py: 8 }}></Box>
     );
   }
 
@@ -600,14 +599,23 @@ export function SnowballCalculator() {
                       background:
                         "linear-gradient(135deg, rgb(102,126,234) 0%, rgb(71,94,194) 100%)",
                       zIndex: 2,
+                      minWidth: 100,
                       color: "#ffffff",
+                      align: "center",
+                      textAlign: "center",
                     }}
                   >
                     Month
                   </TableCell>
                   {sortedBills.map((b, idx) => (
-                    <TableCell key={idx} align="center">
-                      <Typography variant="subtitle2">{b.name}</Typography>
+                    <TableCell
+                      key={idx}
+                      align="center"
+                      sx={{ textAlign: "center" }}
+                    >
+                      <Typography variant="subtitle2" align="center">
+                        {b.name}
+                      </Typography>
                       <Stack
                         direction="row"
                         spacing={1}
@@ -636,7 +644,10 @@ export function SnowballCalculator() {
                         left: 0,
                         background: "#eef2ff",
                         zIndex: 1,
+                        minWidth: 100,
                         color: "#1e293b",
+                        textAlign: "center",
+                        align: "center",
                       }}
                     >
                       Month {m + 1}

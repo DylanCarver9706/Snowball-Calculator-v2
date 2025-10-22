@@ -10,12 +10,11 @@ export default function PostHogProvider({
 }) {
   useEffect(() => {
     // Initialize PostHog
-    posthog.init(process.env.NEXT_PUBLIC_POSTHOG_KEY || '', {
-      api_host: process.env.NEXT_PUBLIC_POSTHOG_HOST || 'https://app.posthog.com',
+    posthog.init(process.env.NEXT_PUBLIC_POSTHOG_KEY as string, {
+      api_host: process.env.NEXT_PUBLIC_POSTHOG_HOST as string,
       loaded: (posthog) => {
-        if (process.env.NODE_ENV === 'development') posthog.debug()
-      },
-      capture_pageview: false,
+        if (process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY?.includes('test')) posthog.debug()
+      }
     })
   }, [])
 

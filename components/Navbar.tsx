@@ -1,6 +1,6 @@
-'use client'
+"use client";
 
-import { useState } from 'react'
+import { useState } from "react";
 import {
   AppBar,
   Toolbar,
@@ -14,32 +14,37 @@ import {
   Box,
   useTheme,
   useMediaQuery,
-} from '@mui/material'
+} from "@mui/material";
 import {
   Menu as MenuIcon,
   Calculate as CalculateIcon,
   Info as InfoIcon,
-} from '@mui/icons-material'
-import { UserButton, SignInButton, useUser } from '@clerk/nextjs'
-import Link from 'next/link'
+} from "@mui/icons-material";
+import { UserButton, useUser } from "@clerk/nextjs";
+import Link from "next/link";
+import SignInRedirect from "./SignInRedirect";
 
 const Navbar = () => {
-  const [mobileOpen, setMobileOpen] = useState(false)
-  const theme = useTheme()
-  const isMobile = useMediaQuery(theme.breakpoints.down('md'))
-  const { isSignedIn } = useUser()
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
+  const { isSignedIn } = useUser();
 
   const handleDrawerToggle = () => {
-    setMobileOpen(!mobileOpen)
-  }
+    setMobileOpen(!mobileOpen);
+  };
 
   const navItems = [
-    { text: 'Snowball Calculator', href: '/calculator', icon: <CalculateIcon /> },
-    { text: 'How It Works', href: '/how-it-works', icon: <InfoIcon /> },
-  ]
+    {
+      text: "Snowball Calculator",
+      href: "/calculator",
+      icon: <CalculateIcon />,
+    },
+    { text: "How It Works", href: "/how-it-works", icon: <InfoIcon /> },
+  ];
 
   const drawer = (
-    <Box onClick={handleDrawerToggle} sx={{ textAlign: 'left' }}>
+    <Box onClick={handleDrawerToggle} sx={{ textAlign: "left" }}>
       <Typography variant="h6" sx={{ my: 2 }}>
         Dave Ramsey Snowball Calculator
       </Typography>
@@ -51,11 +56,15 @@ const Navbar = () => {
         ))}
       </List>
     </Box>
-  )
+  );
 
   return (
     <>
-      <AppBar position="static" elevation={0} sx={{ backgroundColor: 'white', color: 'text.primary' }}>
+      <AppBar
+        position="static"
+        elevation={0}
+        sx={{ backgroundColor: "white", color: "text.primary" }}
+      >
         <Toolbar>
           <Typography
             variant="h6"
@@ -63,11 +72,11 @@ const Navbar = () => {
             href="/"
             sx={{
               flexGrow: 1,
-              textDecoration: 'none',
-              color: 'inherit',
-              fontWeight: 'bold',
-              display: 'flex',
-              alignItems: 'center',
+              textDecoration: "none",
+              color: "inherit",
+              fontWeight: "bold",
+              display: "flex",
+              alignItems: "center",
               gap: 1,
             }}
           >
@@ -84,7 +93,7 @@ const Navbar = () => {
               <MenuIcon />
             </IconButton>
           ) : (
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+            <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
               {navItems.map((item) => (
                 <Button
                   key={item.text}
@@ -92,24 +101,28 @@ const Navbar = () => {
                   href={item.href}
                   color="inherit"
                   startIcon={item.icon}
-                  sx={{ textTransform: 'none' }}
+                  sx={{ textTransform: "none" }}
                 >
                   {item.text}
                 </Button>
               ))}
-              
+
               {isSignedIn ? (
                 <UserButton />
               ) : (
-                <SignInButton mode="modal">
+                <SignInRedirect>
                   <Button
                     variant="contained"
                     color="primary"
-                    sx={{ textTransform: 'none', background: "linear-gradient(135deg, #667eea 0%,rgb(71, 94, 194) 100%)" }}
+                    sx={{
+                      textTransform: "none",
+                      background:
+                        "linear-gradient(135deg, #667eea 0%,rgb(71, 94, 194) 100%)",
+                    }}
                   >
                     Sign In
                   </Button>
-                </SignInButton>
+                </SignInRedirect>
               )}
             </Box>
           )}
@@ -124,14 +137,14 @@ const Navbar = () => {
           keepMounted: true,
         }}
         sx={{
-          display: { xs: 'block', md: 'none' },
-          '& .MuiDrawer-paper': { boxSizing: 'border-box', width: 240 },
+          display: { xs: "block", md: "none" },
+          "& .MuiDrawer-paper": { boxSizing: "border-box", width: 240 },
         }}
       >
         {drawer}
       </Drawer>
     </>
-  )
-}
+  );
+};
 
-export default Navbar
+export default Navbar;

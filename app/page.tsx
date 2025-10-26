@@ -17,9 +17,9 @@ import {
   CheckCircle as CheckCircleIcon,
   ArrowForward as ArrowForwardIcon,
 } from "@mui/icons-material";
-import { SignInButton } from "@clerk/nextjs";
 import Link from "next/link";
 import SnowballCarouselAnimation from "@/components/SnowballCarouselAnimation";
+import SignInRedirect from "@/components/SignInRedirect";
 
 export default function HomePage() {
   const benefits = [
@@ -85,7 +85,7 @@ export default function HomePage() {
                 achieve financial freedom.
               </Typography>
               <Stack direction="row" spacing={2} sx={{ mb: 4 }}>
-                <SignInButton mode="modal">
+                <SignInRedirect>
                   <Button
                     variant="contained"
                     size="large"
@@ -101,7 +101,7 @@ export default function HomePage() {
                   >
                     Start Your Debt-Free Journey
                   </Button>
-                </SignInButton>
+                </SignInRedirect>
                 <Button
                   component={Link}
                   href="/how-it-works"
@@ -213,7 +213,7 @@ export default function HomePage() {
             Join thousands of people who have used this method to get out of
             debt faster.
           </Typography>
-          <SignInButton mode="modal">
+          <SignInRedirect>
             <Button
               variant="contained"
               size="large"
@@ -230,7 +230,7 @@ export default function HomePage() {
             >
               Get Started Now
             </Button>
-          </SignInButton>
+          </SignInRedirect>
         </Container>
       </Box>
 
@@ -284,7 +284,7 @@ export default function HomePage() {
             Every day you wait is another day in debt. Start your journey to
             financial freedom today.
           </Typography>
-          <SignInButton mode="modal">
+          <SignInRedirect>
             <Button
               variant="contained"
               size="large"
@@ -301,7 +301,7 @@ export default function HomePage() {
             >
               Start Now - It's Free
             </Button>
-          </SignInButton>
+          </SignInRedirect>
         </Container>
       </Box>
     </Box>

@@ -27,7 +27,7 @@ import {
   CheckCircle as CheckCircleIcon,
   ArrowForward as ArrowForwardIcon,
 } from "@mui/icons-material";
-import { SignInButton } from "@clerk/nextjs";
+import SignInRedirect from "@/components/SignInRedirect";
 
 export default function HowItWorksPage() {
   const steps = [
@@ -114,14 +114,14 @@ export default function HowItWorksPage() {
                 color="text.secondary"
                 sx={{ mb: 4, maxWidth: 520, mx: "auto", textAlign: "center" }}
               >
-                The Snowball Method is a debt payoff strategy popularized
-                by Dave Ramsey where you pay off your debts in order of smallest
-                to largest debt balance, instead of interest rate. As each debt
-                is paid off, you roll the payment amount into the next debt.
+                The Snowball Method is a debt payoff strategy popularized by
+                Dave Ramsey where you pay off your debts in order of smallest to
+                largest debt balance, instead of interest rate. As each debt is
+                paid off, you roll the payment amount into the next debt.
               </Typography>
 
               <Box sx={{ mt: 4, textAlign: "center" }}>
-                <SignInButton mode="modal">
+                <SignInRedirect>
                   <Button
                     variant="contained"
                     size="large"
@@ -130,7 +130,7 @@ export default function HowItWorksPage() {
                   >
                     Try the Calculator
                   </Button>
-                </SignInButton>
+                </SignInRedirect>
               </Box>
             </Grid>
 
@@ -407,7 +407,7 @@ export default function HowItWorksPage() {
             Our calculator will help you create a personalized debt payoff plan
             using the snowball method.
           </Typography>
-          <SignInButton mode="modal">
+          <SignInRedirect>
             <Button
               variant="contained"
               size="large"
@@ -424,7 +424,7 @@ export default function HowItWorksPage() {
             >
               Start Your Debt-Free Journey
             </Button>
-          </SignInButton>
+          </SignInRedirect>
         </Container>
       </Box>
     </Box>

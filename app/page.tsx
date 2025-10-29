@@ -19,7 +19,7 @@ import {
 } from "@mui/icons-material";
 import Link from "next/link";
 import SnowballCarouselAnimation from "@/components/SnowballCarouselAnimation";
-import SignInRedirect from "@/components/SignInRedirect";
+import AuthRedirect from "@/components/AuthRedirect";
 
 export default function HomePage() {
   const benefits = [
@@ -85,7 +85,7 @@ export default function HomePage() {
                 achieve financial freedom.
               </Typography>
               <Stack direction="row" spacing={2} sx={{ mb: 4 }}>
-                <SignInRedirect>
+                <AuthRedirect mode="signUp">
                   <Button
                     variant="contained"
                     size="large"
@@ -101,7 +101,7 @@ export default function HomePage() {
                   >
                     Start Your Debt-Free Journey
                   </Button>
-                </SignInRedirect>
+                </AuthRedirect>
                 <Button
                   component={Link}
                   href="/how-it-works"
@@ -213,7 +213,7 @@ export default function HomePage() {
             Join thousands of people who have used this method to get out of
             debt faster.
           </Typography>
-          <SignInRedirect>
+          <AuthRedirect mode="signUp">
             <Button
               variant="contained"
               size="large"
@@ -230,7 +230,7 @@ export default function HomePage() {
             >
               Get Started Now
             </Button>
-          </SignInRedirect>
+          </AuthRedirect>
         </Container>
       </Box>
 
@@ -284,7 +284,7 @@ export default function HomePage() {
             Every day you wait is another day in debt. Start your journey to
             financial freedom today.
           </Typography>
-          <SignInRedirect>
+          <AuthRedirect mode="signUp">
             <Button
               variant="contained"
               size="large"
@@ -301,7 +301,7 @@ export default function HomePage() {
             >
               Start Now - It's Free
             </Button>
-          </SignInRedirect>
+          </AuthRedirect>
         </Container>
       </Box>
     </Box>

@@ -22,7 +22,7 @@ import {
 } from "@mui/icons-material";
 import { UserButton, useUser } from "@clerk/nextjs";
 import Link from "next/link";
-import SignInRedirect from "./SignInRedirect";
+import AuthRedirect from "./AuthRedirect";
 
 const Navbar = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -110,7 +110,7 @@ const Navbar = () => {
               {isSignedIn ? (
                 <UserButton />
               ) : (
-                <SignInRedirect>
+                <AuthRedirect>
                   <Button
                     variant="contained"
                     color="primary"
@@ -122,7 +122,7 @@ const Navbar = () => {
                   >
                     Sign In
                   </Button>
-                </SignInRedirect>
+                </AuthRedirect>
               )}
             </Box>
           )}

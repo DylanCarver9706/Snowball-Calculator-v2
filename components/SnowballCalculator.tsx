@@ -25,6 +25,8 @@ import {
   Typography,
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import confetti from "canvas-confetti";
 
 function getDefaultBill(): Bill {
   return {
@@ -131,7 +133,9 @@ export function SnowballCalculator() {
 
   const calculation: DebtWithSchedule[] = useMemo(() => {
     if (sortedBills.length === 0) return [] as DebtWithSchedule[];
-    return calculateSnowball(sortedBills, monthlyContribution);
+    let snowballedResult = calculateSnowball(sortedBills, monthlyContribution);
+    // console.log("snowballedResult", snowballedResult);
+    return snowballedResult;
   }, [sortedBills, monthlyContribution]);
 
   const maxMonths = useMemo(() => {
@@ -141,7 +145,13 @@ export function SnowballCalculator() {
 
   // Editing handlers
   const startEdit = () => {
-    setEditBills(JSON.parse(JSON.stringify(bills)));
+    // Sort bills: debts with balance > 0 first, then debts with balance 0 at bottom
+    const sortedBills = [...bills].sort((a, b) => {
+      if (a.currentBalance === 0 && b.currentBalance !== 0) return 1;
+      if (a.currentBalance !== 0 && b.currentBalance === 0) return -1;
+      return a.currentBalance - b.currentBalance;
+    });
+    setEditBills(JSON.parse(JSON.stringify(sortedBills)));
     setEditMonthlyContribution(monthlyContribution);
     setEditing(true);
   };
@@ -182,6 +192,16 @@ export function SnowballCalculator() {
           ? Number(value)
           : value;
       updated[index] = { ...updated[index], [field]: parsed } as Bill;
+
+      // If balance changed, reorder to keep debts with balance 0 at bottom
+      if (field === "currentBalance") {
+        return updated.sort((a, b) => {
+          if (a.currentBalance === 0 && b.currentBalance !== 0) return 1;
+          if (a.currentBalance !== 0 && b.currentBalance === 0) return -1;
+          return a.currentBalance - b.currentBalance;
+        });
+      }
+
       return updated;
     });
   };
@@ -198,6 +218,31 @@ export function SnowballCalculator() {
     });
   };
 
+  const handleMarkPaidOff = (index: number) => {
+    setEditBills((prev) => {
+      if (!prev) return prev;
+      const updated = [...prev];
+      updated[index] = { ...updated[index], currentBalance: 0 };
+
+      // Reorder: debts with balance > 0 first, then debts with balance 0 at bottom
+      const reordered = updated.sort((a, b) => {
+        if (a.currentBalance === 0 && b.currentBalance !== 0) return 1;
+        if (a.currentBalance !== 0 && b.currentBalance === 0) return -1;
+        return a.currentBalance - b.currentBalance;
+      });
+
+      // Trigger confetti animation
+      confetti({
+        particleCount: 100,
+        spread: 70,
+        origin: { y: 0.6 },
+        colors: ["#667eea", "#764ba2", "#f093fb", "#4facfe", "#00f2fe"],
+      });
+
+      return reordered;
+    });
+  };
+
   if (user && isLoading) {
     return (
       <Box sx={{ display: "flex", justifyContent: "center", py: 8 }}>
@@ -208,7 +253,10 @@ export function SnowballCalculator() {
 
   if (!user) {
     return (
-      <Box sx={{ display: "flex", justifyContent: "center", py: 8 }}></Box>
+      <Box 
+      sx={{ display: "flex", justifyContent: "center", py: 8 }}>
+        <CircularProgress />
+      </Box>
     );
   }
 
@@ -333,9 +381,96 @@ export function SnowballCalculator() {
                 width: { xs: "100%", sm: "auto" },
               }}
             >
-              Edit Table
+              Edit Table / Extra Payment
             </Button>
           )}
+        </Stack>
+      </Card>
+
+      {/* Summary Section */}
+      <Card
+        sx={{
+          mt: 3,
+          mb: 2,
+          backgroundColor: "#f5f7ff",
+          border: "1px solid rgba(37,99,235,0.1)",
+          boxShadow: "none",
+        }}
+      >
+        <Stack
+          direction={{ xs: "column", sm: "row" }}
+          spacing={{ xs: 1, sm: 3 }}
+          sx={{
+            alignItems: { sm: "center" },
+            p: { xs: 2, sm: 3 },
+            justifyContent: { sm: "space-between" },
+          }}
+        >
+          {/* Total Debt */}
+          <Box>
+            <Typography variant="subtitle2" color="textSecondary">
+              Total Debt
+            </Typography>
+            <Typography variant="h6" color="primary">
+              $
+              {bills
+                .reduce((sum, b) => sum + Number(b.currentBalance), 0)
+                .toLocaleString(undefined, { maximumFractionDigits: 2 })}
+            </Typography>
+          </Box>
+
+          {/* Extra Monthly Income Freed */}
+          <Box>
+            <Typography variant="subtitle2" color="textSecondary">
+              Monthly Debts
+            </Typography>
+            <Typography variant="h6" color="primary">
+              $
+              {bills
+                .reduce((sum, b) => sum + Number(b.monthlyPayment), 0)
+                .toLocaleString(undefined, { maximumFractionDigits: 2 })}{" "}
+              / month
+            </Typography>
+          </Box>
+
+          
+
+          {/* Total Monthly Income Saved (current debts with 0 balance)*/}
+          <Box>
+            <Typography variant="subtitle2" color="textSecondary">
+              Monthly Debts Saved
+            </Typography>
+            <Typography variant="h6" color="primary">
+              $
+              {bills
+                .filter((b) => b.currentBalance === 0)
+                .reduce((sum, b) => sum + Number(b.monthlyPayment), 0)
+                .toLocaleString(undefined, { maximumFractionDigits: 2 })}
+              { " / month" }
+            </Typography>
+          </Box>
+
+          {/* Months to Debt Free */}
+          <Box>
+            <Typography variant="subtitle2" color="textSecondary">
+              Time Until Debt Free
+            </Typography>
+            <Typography variant="h6" color="primary">
+              {calculation.length === 0
+                ? 0
+                : Math.max(
+                    ...calculation.map(
+                      (d) =>
+                        d.months.findIndex(
+                          (m, i) =>
+                            m.remainingBalance === 0 &&
+                            (i === 0 || d.months[i - 1].remainingBalance > 0)
+                        ) + 1
+                    )
+                  )}
+                   { " months"}
+            </Typography>
+          </Box>
         </Stack>
       </Card>
 
@@ -460,6 +595,28 @@ export function SnowballCalculator() {
                       }}
                     />
                   </Stack>
+                  <Stack direction="row" spacing={1} sx={{ mt: 1 }}>
+                    <Button
+                      variant="contained"
+                      size="small"
+                      startIcon={<CheckCircleIcon />}
+                      onClick={() => handleMarkPaidOff(idx)}
+                      disabled={bill.currentBalance === 0}
+                      sx={{
+                        backgroundColor: "rgba(255,255,255,0.2)",
+                        color: "white",
+                        "&:hover": {
+                          backgroundColor: "rgba(255,255,255,0.3)",
+                        },
+                        "&:disabled": {
+                          backgroundColor: "rgba(255,255,255,0.1)",
+                          color: "rgba(255,255,255,0.5)",
+                        },
+                      }}
+                    >
+                      Mark Paid Off
+                    </Button>
+                  </Stack>
                 </Box>
               </Box>
             ))}
@@ -470,19 +627,19 @@ export function SnowballCalculator() {
             <Table size="small">
               <TableHead>
                 <TableRow>
-                  <TableCell sx={{ width: { sm: 360, md: 420 } }}>
+                  <TableCell sx={{ width: { sm: 320, md: 360 } }}>
                     Debt Name
                   </TableCell>
-                  <TableCell sx={{ width: { sm: 120, md: 200 } }}>
-                    Interest Rate (%)
+                  <TableCell sx={{ width: { sm: 120, md: 140 } }}>
+                    Interest Rate
                   </TableCell>
                   <TableCell sx={{ width: { sm: 120, md: 200 } }}>
                     Min. Monthly Payment
                   </TableCell>
-                  <TableCell sx={{ width: { sm: 140, md: 200 } }}>
+                  <TableCell sx={{ width: { sm: 120, md: 140 } }}>
                     Current Balance
                   </TableCell>
-                  <TableCell align="right">Actions</TableCell>
+                  <TableCell>Actions</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -499,23 +656,28 @@ export function SnowballCalculator() {
                       />
                     </TableCell>
                     <TableCell sx={{ width: { sm: 120, md: 140 } }}>
-                      <TextField
-                        type="number"
-                        size="small"
-                        value={bill.interestRate}
-                        onChange={(e) =>
-                          handleEditBillChange(
-                            idx,
-                            "interestRate",
-                            e.target.value
-                          )
-                        }
-                        inputProps={{ min: 0, step: 0.01 }}
-                        sx={{
-                          maxWidth: { sm: 120, md: 140 },
-                          "& .MuiInputBase-input": { fontSize: 13 },
-                        }}
-                      />
+                      <Box sx={{ display: "flex", alignItems: "center" }}>
+                        <TextField
+                          type="number"
+                          size="small"
+                          value={bill.interestRate}
+                          onChange={(e) =>
+                            handleEditBillChange(
+                              idx,
+                              "interestRate",
+                              e.target.value
+                            )
+                          }
+                          inputProps={{ min: 0, step: 0.01 }}
+                          sx={{
+                            maxWidth: 90,
+                            "& .MuiInputBase-input": { fontSize: 13 },
+                          }}
+                        />
+                        {/* <Typography variant="body2" sx={{ ml: 1 }}>
+                          %
+                        </Typography> */}
+                      </Box>
                     </TableCell>
                     <TableCell sx={{ width: { sm: 120, md: 140 } }}>
                       <TextField
@@ -536,7 +698,7 @@ export function SnowballCalculator() {
                         }}
                       />
                     </TableCell>
-                    <TableCell sx={{ width: { sm: 140, md: 160 } }}>
+                    <TableCell sx={{ width: { sm: 120, md: 100 } }}>
                       <TextField
                         type="number"
                         size="small"
@@ -550,18 +712,37 @@ export function SnowballCalculator() {
                         }
                         inputProps={{ min: 0, step: 1 }}
                         sx={{
-                          maxWidth: { sm: 140, md: 160 },
+                          maxWidth: { sm: 120, md: 100 },
                           "& .MuiInputBase-input": { fontSize: 13 },
                         }}
                       />
                     </TableCell>
                     <TableCell align="right">
-                      <IconButton
-                        color="error"
-                        onClick={() => handleEditDeleteBill(idx)}
+                      <Stack
+                        direction="row"
+                        spacing={1}
+                        justifyContent="flex-end"
                       >
-                        <DeleteIcon fontSize="small" />
-                      </IconButton>
+                        <Button
+                          variant="outlined"
+                          size="small"
+                          startIcon={<CheckCircleIcon />}
+                          onClick={() => handleMarkPaidOff(idx)}
+                          disabled={bill.currentBalance === 0}
+                          sx={{
+                            textTransform: "none",
+                            fontSize: "0.75rem",
+                          }}
+                        >
+                          Mark Paid Off
+                        </Button>
+                        <IconButton
+                          color="error"
+                          onClick={() => handleEditDeleteBill(idx)}
+                        >
+                          <DeleteIcon fontSize="small" />
+                        </IconButton>
+                      </Stack>
                     </TableCell>
                   </TableRow>
                 ))}
@@ -748,21 +929,20 @@ export function SnowballCalculator() {
                                   Interest: ${monthData.interestPaid.toFixed(2)}
                                 </Typography>
                               </Stack>
-                              <Typography
-                                variant="caption"
-                              >
+                              <Typography variant="caption">
                                 Remaining Balance: $
                                 {monthData.remainingBalance.toFixed(2)}
                               </Typography>
                               {monthData.rollover > 0 && (
-                                  <Typography
-                                    variant="caption"
-                                    color="warning.main"
-                                    fontWeight={600}
-                                  >
-                                    <br></br>Rollover: ${monthData.rollover.toFixed(2)}
-                                  </Typography>
-                                )}
+                                <Typography
+                                  variant="caption"
+                                  color="warning.main"
+                                  fontWeight={600}
+                                >
+                                  <br></br>Rollover: $
+                                  {monthData.rollover.toFixed(2)}
+                                </Typography>
+                              )}
                             </Box>
                           ) : null}
                         </TableCell>

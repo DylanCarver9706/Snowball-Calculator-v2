@@ -27,8 +27,13 @@ export function calculateSnowball(
     months: [],
   }));
 
-  // 3. Track freed minimums
+  // 3. Track freed minimums - initialize with debts that start at 0 balance
   let freedMinimums = 0;
+  debtSchedules.forEach((debt, idx) => {
+    if (debt.currentBalance <= 0) {
+      freedMinimums += debt.monthlyPayment;
+    }
+  });
   let month = 0;
   let allPaidOff = false;
 
@@ -50,21 +55,72 @@ export function calculateSnowball(
     if (i < debtSchedules.length) {
       available = debtSchedules[i].monthlyPayment + localFreed + monthlyExtra;
       snowballUsed = true;
-    }
-    // For each debt in order
-    for (let j = i; j < debtSchedules.length; j++) {
-      const debt = debtSchedules[j];
-      // If already paid off, push snowballed cell
-      if (balances[j] <= 0) {
+    } else {
+      // All debts are paid off, but we still need to create month entries
+      for (let j = 0; j < debtSchedules.length; j++) {
+        const debt = debtSchedules[j];
         debt.months.push({
           payment: 0,
           remainingBalance: 0,
           principalPaid: 0,
           interestPaid: 0,
           usedSnowball: false,
-          rollover: 0,
-          info: "This debt is already paid off.",
+          rollover: debt.monthlyPayment,
+          info: "This debt is paid off. Monthly payment rolls over to next debt.",
         });
+      }
+      allPaidOff = true;
+      month++;
+      continue;
+    }
+    // For each debt in order (process ALL debts, including those with 0 balance)
+    for (let j = 0; j < debtSchedules.length; j++) {
+      const debt = debtSchedules[j];
+      // If already paid off (including those that started at 0), push snowballed cell
+      if (balances[j] <= 0) {
+        // For debts with 0 balance, their monthly payment should rollover to the next debt
+        // If this debt comes before the first unpaid debt, its payment should be added to available
+        if (j < i) {
+          // This debt's monthly payment should be available for the first unpaid debt
+          // It's already included in freedMinimums for future months, but for this month
+          // we need to make sure it's available as rollover
+          if (j === i - 1) {
+            // This is the debt just before the first unpaid debt
+            // Its payment is already in freedMinimums, so we don't double-count
+            // But we should show it as rollover
+            debt.months.push({
+              payment: 0,
+              remainingBalance: 0,
+              principalPaid: 0,
+              interestPaid: 0,
+              usedSnowball: false,
+              rollover: debt.monthlyPayment,
+              info: "This debt is already paid off. Monthly payment rolls over to next debt.",
+            });
+          } else {
+            // This debt's payment is already in freedMinimums and will be used
+            debt.months.push({
+              payment: 0,
+              remainingBalance: 0,
+              principalPaid: 0,
+              interestPaid: 0,
+              usedSnowball: false,
+              rollover: debt.monthlyPayment,
+              info: "This debt is already paid off. Monthly payment rolls over to next debt.",
+            });
+          }
+        } else {
+          // This debt was paid off during calculation, not at start
+          debt.months.push({
+            payment: 0,
+            remainingBalance: 0,
+            principalPaid: 0,
+            interestPaid: 0,
+            usedSnowball: false,
+            rollover: 0,
+            info: "This debt is already paid off.",
+          });
+        }
         continue;
       }
       let infoParts: string[] = [];

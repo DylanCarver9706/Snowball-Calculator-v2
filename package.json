@@ -19,7 +19,7 @@
     "canvas-confetti": "^1.9.4",
     "next": "15.2.3",
     "postcss": "^8.4.32",
-    "posthog-js": "^1.280.1",
+    "posthog-js": "^1.293.0",
     "react": "^19",
     "react-dom": "^19"
   },

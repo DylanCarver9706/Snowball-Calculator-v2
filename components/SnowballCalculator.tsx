@@ -12,6 +12,11 @@ import {
   Button,
   Card,
   CircularProgress,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
   IconButton,
   Stack,
   Table,
@@ -47,6 +52,8 @@ export function SnowballCalculator() {
     number | null
   >(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState<boolean>(false);
+  const [deleteIndex, setDeleteIndex] = useState<number | null>(null);
 
   const { openSignIn } = useClerk();
 
@@ -210,12 +217,26 @@ export function SnowballCalculator() {
     setEditBills((prev) => (prev ? [getDefaultBill(), ...prev] : prev));
 
   const handleEditDeleteBill = (index: number) => {
-    setEditBills((prev) => {
-      if (!prev) return prev;
-      const updated = [...prev];
-      updated.splice(index, 1);
-      return updated;
-    });
+    setDeleteIndex(index);
+    setDeleteDialogOpen(true);
+  };
+
+  const confirmDeleteBill = () => {
+    if (deleteIndex !== null) {
+      setEditBills((prev) => {
+        if (!prev) return prev;
+        const updated = [...prev];
+        updated.splice(deleteIndex, 1);
+        return updated;
+      });
+    }
+    setDeleteDialogOpen(false);
+    setDeleteIndex(null);
+  };
+
+  const cancelDeleteBill = () => {
+    setDeleteDialogOpen(false);
+    setDeleteIndex(null);
   };
 
   const handleMarkPaidOff = (index: number) => {
@@ -952,6 +973,42 @@ export function SnowballCalculator() {
           </Box>
         </Card>
       )}
+
+      {/* Delete Confirmation Dialog */}
+      <Dialog
+        open={deleteDialogOpen}
+        onClose={cancelDeleteBill}
+        aria-labelledby="delete-dialog-title"
+        aria-describedby="delete-dialog-description"
+      >
+        <DialogTitle id="delete-dialog-title">Delete Debt</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="delete-dialog-description">
+            {deleteIndex !== null && editBills && editBills[deleteIndex] ? (
+              <>
+                Are you sure you want to delete{" "}
+                <strong>{editBills[deleteIndex].name}</strong>? This action
+                cannot be undone.
+              </>
+            ) : (
+              "Are you sure you want to delete this debt? This action cannot be undone."
+            )}
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={cancelDeleteBill} color="primary">
+            Cancel
+          </Button>
+          <Button
+            onClick={confirmDeleteBill}
+            color="error"
+            variant="contained"
+            autoFocus
+          >
+            Delete
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 }

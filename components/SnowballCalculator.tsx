@@ -33,7 +33,7 @@ function getDefaultBill(): Bill {
     name: "New Debt",
     interestRate: 10,
     monthlyPayment: 50,
-    currentBalance: 500,
+    currentBalance: 0,
   };
 }
 
@@ -253,8 +253,7 @@ export function SnowballCalculator() {
 
   if (!user) {
     return (
-      <Box 
-      sx={{ display: "flex", justifyContent: "center", py: 8 }}>
+      <Box sx={{ display: "flex", justifyContent: "center", py: 8 }}>
         <CircularProgress />
       </Box>
     );
@@ -433,8 +432,6 @@ export function SnowballCalculator() {
             </Typography>
           </Box>
 
-          
-
           {/* Total Monthly Income Saved (current debts with 0 balance)*/}
           <Box>
             <Typography variant="subtitle2" color="textSecondary">
@@ -446,7 +443,7 @@ export function SnowballCalculator() {
                 .filter((b) => b.currentBalance === 0)
                 .reduce((sum, b) => sum + Number(b.monthlyPayment), 0)
                 .toLocaleString(undefined, { maximumFractionDigits: 2 })}
-              { " / month" }
+              {" / month"}
             </Typography>
           </Box>
 
@@ -468,7 +465,7 @@ export function SnowballCalculator() {
                         ) + 1
                     )
                   )}
-                   { " months"}
+              {" months"}
             </Typography>
           </Box>
         </Stack>

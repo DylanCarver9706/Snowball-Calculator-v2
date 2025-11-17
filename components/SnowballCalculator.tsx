@@ -38,7 +38,7 @@ function getDefaultBill(): Bill {
     name: "New Debt",
     interestRate: 10,
     monthlyPayment: 50,
-    currentBalance: 0,
+    currentBalance: 10000,
   };
 }
 
@@ -214,7 +214,7 @@ export function SnowballCalculator() {
   };
 
   const handleEditAddBill = () =>
-    setEditBills((prev) => (prev ? [getDefaultBill(), ...prev] : prev));
+    setEditBills((prev) => (prev ? [...prev, getDefaultBill()] : prev));
 
   const handleEditDeleteBill = (index: number) => {
     setDeleteIndex(index);
@@ -374,18 +374,6 @@ export function SnowballCalculator() {
                 }}
               >
                 Cancel
-              </Button>
-              <Button
-                variant="contained"
-                onClick={handleEditAddBill}
-                sx={{
-                  backgroundColor: "white",
-                  color: "black",
-                  "&:hover": { backgroundColor: "rgba(255,255,255,0.9)" },
-                  width: { xs: "100%", sm: "auto" },
-                }}
-              >
-                Add Debt
               </Button>
             </Stack>
           ) : (
@@ -640,6 +628,29 @@ export function SnowballCalculator() {
             ))}
           </Stack>
 
+          {/* Add Debt Button - Mobile */}
+          <Box
+            sx={{ display: { xs: "block", sm: "none" }, mt: 2, width: "100%" }}
+          >
+            <Button
+              variant="contained"
+              onClick={handleEditAddBill}
+              fullWidth
+              sx={{
+                background:
+                  "linear-gradient(135deg, #667eea 0%,rgb(71, 94, 194) 100%)",
+                color: "white",
+                "&:hover": {
+                  background:
+                    "linear-gradient(135deg, #667eea 0%,rgb(71, 94, 194) 100%)",
+                  opacity: 0.9,
+                },
+              }}
+            >
+              Add Debt
+            </Button>
+          </Box>
+
           {/* Desktop/tablet editor */}
           <TableContainer sx={{ display: { xs: "none", sm: "block" } }}>
             <Table size="small">
@@ -767,6 +778,29 @@ export function SnowballCalculator() {
               </TableBody>
             </Table>
           </TableContainer>
+
+          {/* Add Debt Button - Desktop */}
+          <Box
+            sx={{ display: { xs: "none", sm: "block" }, mt: 2, width: "100%" }}
+          >
+            <Button
+              variant="contained"
+              onClick={handleEditAddBill}
+              fullWidth
+              sx={{
+                background:
+                  "linear-gradient(135deg, #667eea 0%,rgb(71, 94, 194) 100%)",
+                color: "white",
+                "&:hover": {
+                  background:
+                    "linear-gradient(135deg, #667eea 0%,rgb(71, 94, 194) 100%)",
+                  opacity: 0.9,
+                },
+              }}
+            >
+              Add Debt
+            </Button>
+          </Box>
         </Card>
       ) : (
         <Card

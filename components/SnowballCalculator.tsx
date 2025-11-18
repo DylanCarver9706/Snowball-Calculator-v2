@@ -501,107 +501,108 @@ export function SnowballCalculator() {
                   background:
                     "linear-gradient(135deg, #667eea 0%,rgb(71, 94, 194) 100%)",
                   color: "white",
+                  overflow: "hidden",
+                  width: "100%",
+                  boxSizing: "border-box",
                 }}
               >
-                <Box sx={{ flexGrow: 1 }}>
-                  <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                    <TextField
-                      fullWidth
-                      size="small"
-                      label="Debt Name"
-                      value={bill.name}
-                      onChange={(e) =>
-                        handleEditBillChange(idx, "name", e.target.value)
-                      }
-                      sx={{
-                        "& .MuiInputBase-input": {
-                          color: "white",
-                          fontSize: 18,
-                        },
-                        "& .MuiInputLabel-root": { color: "white" },
-                        maxWidth: "90%",
-                      }}
-                    />
-                    <IconButton
-                      color="error"
-                      onClick={() => handleEditDeleteBill(idx)}
-                      size="small"
-                    >
-                      <DeleteIcon />
-                    </IconButton>
-                  </Box>
-                  <Stack direction="row" spacing={1} sx={{ mt: 1 }}>
-                    <TextField
-                      type="number"
-                      size="small"
-                      label="Rate (%)"
-                      value={bill.interestRate}
-                      onChange={(e) =>
-                        handleEditBillChange(
-                          idx,
-                          "interestRate",
-                          e.target.value
-                        )
-                      }
-                      inputProps={{ min: 0, step: 0.01 }}
-                      sx={{
-                        minWidth: 100,
-                        flex: 1,
-                        "& .MuiInputBase-input": {
-                          color: "white",
-                          fontSize: 18,
-                        },
-                        "& .MuiInputLabel-root": { color: "white" },
-                      }}
-                    />
-                    <TextField
-                      type="number"
-                      size="small"
-                      label="Payment"
-                      value={bill.monthlyPayment}
-                      onChange={(e) =>
-                        handleEditBillChange(
-                          idx,
-                          "monthlyPayment",
-                          e.target.value
-                        )
-                      }
-                      inputProps={{ min: 0, step: 1 }}
-                      sx={{
-                        minWidth: 100,
-                        flex: 1,
-                        "& .MuiInputBase-input": {
-                          color: "white",
-                          fontSize: 18,
-                        },
-                        "& .MuiInputLabel-root": { color: "white" },
-                      }}
-                    />
-                    <TextField
-                      type="number"
-                      size="small"
-                      label="Balance"
-                      value={bill.currentBalance}
-                      onChange={(e) =>
-                        handleEditBillChange(
-                          idx,
-                          "currentBalance",
-                          e.target.value
-                        )
-                      }
-                      inputProps={{ min: 0, step: 1 }}
-                      sx={{
-                        minWidth: 120,
-                        flex: 1,
-                        "& .MuiInputBase-input": {
-                          color: "white",
-                          fontSize: 18,
-                        },
-                        "& .MuiInputLabel-root": { color: "white" },
-                      }}
-                    />
-                  </Stack>
-                  <Stack direction="row" spacing={1} sx={{ mt: 1 }}>
+                <Box
+                  sx={{
+                    flexGrow: 1,
+                    minWidth: 0,
+                    width: "100%",
+                    overflow: "visible",
+                  }}
+                >
+                  <TextField
+                    fullWidth
+                    size="small"
+                    label="Debt Name"
+                    value={bill.name}
+                    onChange={(e) =>
+                      handleEditBillChange(idx, "name", e.target.value)
+                    }
+                    sx={{
+                      width: "100%",
+                      "& .MuiInputBase-input": {
+                        color: "white",
+                        fontSize: 18,
+                      },
+                      "& .MuiInputLabel-root": { color: "white" },
+                    }}
+                  />
+                  <TextField
+                    type="number"
+                    size="small"
+                    label="Interest Rate (%)"
+                    value={bill.interestRate}
+                    onChange={(e) =>
+                      handleEditBillChange(idx, "interestRate", e.target.value)
+                    }
+                    inputProps={{ min: 0, step: 0.01 }}
+                    fullWidth
+                    sx={{
+                      mt: 1,
+                      "& .MuiInputBase-input": {
+                        color: "white",
+                        fontSize: 18,
+                      },
+                      "& .MuiInputLabel-root": { color: "white" },
+                    }}
+                  />
+                  <TextField
+                    type="number"
+                    size="small"
+                    label="Monthly Minimum Payment"
+                    value={bill.monthlyPayment}
+                    onChange={(e) =>
+                      handleEditBillChange(
+                        idx,
+                        "monthlyPayment",
+                        e.target.value
+                      )
+                    }
+                    inputProps={{ min: 0, step: 1 }}
+                    fullWidth
+                    sx={{
+                      mt: 1,
+                      "& .MuiInputBase-input": {
+                        color: "white",
+                        fontSize: 18,
+                      },
+                      "& .MuiInputLabel-root": { color: "white" },
+                    }}
+                  />
+                  <TextField
+                    type="number"
+                    size="small"
+                    label="Balance"
+                    value={bill.currentBalance}
+                    onChange={(e) =>
+                      handleEditBillChange(
+                        idx,
+                        "currentBalance",
+                        e.target.value
+                      )
+                    }
+                    inputProps={{ min: 0, step: 1 }}
+                    fullWidth
+                    sx={{
+                      mt: 1,
+                      "& .MuiInputBase-input": {
+                        color: "white",
+                        fontSize: 18,
+                      },
+                      "& .MuiInputLabel-root": { color: "white" },
+                    }}
+                  />
+                  <Stack
+                    direction="row"
+                    spacing={1}
+                    sx={{ mt: 1, width: "100%", overflow: "visible" }}
+                    justifyContent="space-between"
+                    alignItems="center"
+                  >
                     <Button
                       variant="contained"
                       size="small"
@@ -611,6 +612,8 @@ export function SnowballCalculator() {
                       sx={{
                         backgroundColor: "rgba(255,255,255,0.2)",
                         color: "white",
+                        flexShrink: 1,
+                        minWidth: 0,
                         "&:hover": {
                           backgroundColor: "rgba(255,255,255,0.3)",
                         },
@@ -622,6 +625,16 @@ export function SnowballCalculator() {
                     >
                       Mark Paid Off
                     </Button>
+                    <IconButton
+                      color="error"
+                      onClick={() => handleEditDeleteBill(idx)}
+                      size="small"
+                      sx={{
+                        flexShrink: 0,
+                      }}
+                    >
+                      <DeleteIcon />
+                    </IconButton>
                   </Stack>
                 </Box>
               </Box>
@@ -659,16 +672,18 @@ export function SnowballCalculator() {
                   <TableCell sx={{ width: { sm: 320, md: 360 } }}>
                     Debt Name
                   </TableCell>
-                  <TableCell sx={{ width: { sm: 120, md: 140 } }}>
-                    Interest Rate
+                  <TableCell sx={{ width: { sm: 120, md: 150 } }}>
+                    Interest Rate (%)
                   </TableCell>
-                  <TableCell sx={{ width: { sm: 120, md: 200 } }}>
+                  <TableCell sx={{ width: { sm: 100, md: 130 } }}>
                     Min. Monthly Payment
                   </TableCell>
                   <TableCell sx={{ width: { sm: 120, md: 140 } }}>
                     Current Balance
                   </TableCell>
-                  <TableCell>Actions</TableCell>
+                  <TableCell align="left" sx={{ width: { sm: 120, md: 200 } }}>
+                    Actions
+                  </TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -708,7 +723,7 @@ export function SnowballCalculator() {
                         </Typography> */}
                       </Box>
                     </TableCell>
-                    <TableCell sx={{ width: { sm: 120, md: 140 } }}>
+                    <TableCell sx={{ width: { sm: 100, md: 130 } }}>
                       <TextField
                         type="number"
                         size="small"
@@ -722,7 +737,7 @@ export function SnowballCalculator() {
                         }
                         inputProps={{ min: 0, step: 1 }}
                         sx={{
-                          maxWidth: { sm: 120, md: 140 },
+                          maxWidth: { sm: 100, md: 130 },
                           "& .MuiInputBase-input": { fontSize: 13 },
                         }}
                       />
@@ -746,11 +761,11 @@ export function SnowballCalculator() {
                         }}
                       />
                     </TableCell>
-                    <TableCell align="right">
+                    <TableCell align="left">
                       <Stack
                         direction="row"
                         spacing={1}
-                        justifyContent="flex-end"
+                        justifyContent="flex-start"
                       >
                         <Button
                           variant="outlined"

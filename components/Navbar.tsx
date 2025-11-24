@@ -44,14 +44,37 @@ const Navbar = () => {
   ];
 
   const drawer = (
-    <Box onClick={handleDrawerToggle} sx={{ textAlign: "left" }}>
-      <Typography variant="h6" sx={{ my: 2 }}>
+    <Box
+      onClick={handleDrawerToggle}
+      sx={{
+        textAlign: "left",
+        background: "linear-gradient(135deg, #667eea 0%,rgb(71, 94, 194) 100%)",
+        height: "100%",
+        color: "white",
+      }}
+    >
+      <Typography variant="h6" sx={{ my: 2, px: 2, color: "white" }}>
         Dave Ramsey Snowball Calculator
       </Typography>
       <List>
         {navItems.map((item) => (
-          <ListItem key={item.text} component={Link} href={item.href}>
-            <ListItemText primary={item.text} />
+          <ListItem
+            key={item.text}
+            component={Link}
+            href={item.href}
+            sx={{
+              color: "white",
+              boxSizing: "border-box",
+              width: "100%",
+              "&:hover": {
+                backgroundColor: "rgba(255, 255, 255, 0.1)",
+              },
+            }}
+          >
+            <ListItemText
+              primary={item.text}
+              primaryTypographyProps={{ color: "white" }}
+            />
           </ListItem>
         ))}
       </List>
@@ -138,7 +161,12 @@ const Navbar = () => {
         }}
         sx={{
           display: { xs: "block", md: "none" },
-          "& .MuiDrawer-paper": { boxSizing: "border-box", width: 240 },
+          "& .MuiDrawer-paper": {
+            boxSizing: "border-box",
+            width: 240,
+            background:
+              "linear-gradient(135deg, #667eea 0%,rgb(71, 94, 194) 100%)",
+          },
         }}
       >
         {drawer}

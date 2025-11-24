@@ -15,6 +15,9 @@ export const metadata: Metadata = {
     "Calculate your debt payoff strategy using the Dave Ramsey snowball method. Get out of debt faster with our easy-to-use calculator.",
   keywords:
     "debt payoff, snowball method, Dave Ramsey, debt calculator, financial freedom",
+  icons: {
+    icon: "/icon.PNG",
+  },
 };
 
 export default function RootLayout({

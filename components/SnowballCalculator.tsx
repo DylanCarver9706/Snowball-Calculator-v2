@@ -42,6 +42,24 @@ function getDefaultBill(): Bill {
   };
 }
 
+// Format number to always show 2 decimal places (for display)
+function formatNumber(value: number | string | undefined | null): string {
+  if (value === undefined || value === null || value === "") return "";
+  const num = typeof value === "string" ? parseFloat(value) : value;
+  if (isNaN(num)) return "";
+  return num.toFixed(2);
+}
+
+// Normalize a bill's numeric values to ensure 2 decimal precision
+function normalizeBill(bill: Bill): Bill {
+  return {
+    ...bill,
+    interestRate: parseFloat((bill.interestRate || 0).toFixed(2)),
+    monthlyPayment: parseFloat((bill.monthlyPayment || 0).toFixed(2)),
+    currentBalance: parseFloat((bill.currentBalance || 0).toFixed(2)),
+  };
+}
+
 export function SnowballCalculator() {
   const { user, isLoaded } = useUser();
   const [monthlyContribution, setMonthlyContribution] = useState<number>(100);
@@ -63,7 +81,9 @@ export function SnowballCalculator() {
       const metadata = user.publicMetadata as any;
       if (parseInt(metadata?.monthlyContribution) >= 0 && metadata?.bills) {
         setMonthlyContribution(parseInt(metadata.monthlyContribution));
-        setBills(metadata.bills);
+        // Normalize bills to ensure 2 decimal precision
+        const normalizedBills = (metadata.bills as Bill[]).map(normalizeBill);
+        setBills(normalizedBills);
       } else {
         // Seed with sample debts
         setBills([
@@ -158,7 +178,9 @@ export function SnowballCalculator() {
       if (a.currentBalance !== 0 && b.currentBalance === 0) return -1;
       return a.currentBalance - b.currentBalance;
     });
-    setEditBills(JSON.parse(JSON.stringify(sortedBills)));
+    // Normalize bills to ensure 2 decimal precision
+    const normalizedBills = sortedBills.map(normalizeBill);
+    setEditBills(JSON.parse(JSON.stringify(normalizedBills)));
     setEditMonthlyContribution(monthlyContribution);
     setEditing(true);
   };
@@ -171,9 +193,14 @@ export function SnowballCalculator() {
 
   const saveEdit = async () => {
     if (editBills && editMonthlyContribution !== null) {
-      const sorted = [...editBills].sort(
-        (a, b) => a.currentBalance - b.currentBalance
-      );
+      // Normalize bills to ensure 2 decimal precision
+      const normalizedBills = editBills.map(normalizeBill);
+      // Sort bills: debts with balance > 0 first, then debts with balance 0 at bottom
+      const sorted = [...normalizedBills].sort((a, b) => {
+        if (a.currentBalance === 0 && b.currentBalance !== 0) return 1;
+        if (a.currentBalance !== 0 && b.currentBalance === 0) return -1;
+        return a.currentBalance - b.currentBalance;
+      });
       setBills(sorted);
       setMonthlyContribution(editMonthlyContribution);
       await saveToMetadata(sorted, editMonthlyContribution);
@@ -199,15 +226,6 @@ export function SnowballCalculator() {
           ? Number(value)
           : value;
       updated[index] = { ...updated[index], [field]: parsed } as Bill;
-
-      // If balance changed, reorder to keep debts with balance 0 at bottom
-      if (field === "currentBalance") {
-        return updated.sort((a, b) => {
-          if (a.currentBalance === 0 && b.currentBalance !== 0) return 1;
-          if (a.currentBalance !== 0 && b.currentBalance === 0) return -1;
-          return a.currentBalance - b.currentBalance;
-        });
-      }
 
       return updated;
     });
@@ -562,7 +580,7 @@ export function SnowballCalculator() {
                         e.target.value
                       )
                     }
-                    inputProps={{ min: 0, step: 1 }}
+                    inputProps={{ min: 0, step: 0.01 }}
                     fullWidth
                     sx={{
                       mt: 1,
@@ -585,7 +603,7 @@ export function SnowballCalculator() {
                         e.target.value
                       )
                     }
-                    inputProps={{ min: 0, step: 1 }}
+                    inputProps={{ min: 0, step: 0.01 }}
                     fullWidth
                     sx={{
                       mt: 1,
@@ -660,7 +678,7 @@ export function SnowballCalculator() {
                 },
               }}
             >
-              Add Debt
+              Add Debt +
             </Button>
           </Box>
 
@@ -735,7 +753,7 @@ export function SnowballCalculator() {
                             e.target.value
                           )
                         }
-                        inputProps={{ min: 0, step: 1 }}
+                        inputProps={{ min: 0, step: 0.01 }}
                         sx={{
                           maxWidth: { sm: 100, md: 130 },
                           "& .MuiInputBase-input": { fontSize: 13 },
@@ -754,7 +772,7 @@ export function SnowballCalculator() {
                             e.target.value
                           )
                         }
-                        inputProps={{ min: 0, step: 1 }}
+                        inputProps={{ min: 0, step: 0.01 }}
                         sx={{
                           maxWidth: { sm: 120, md: 100 },
                           "& .MuiInputBase-input": { fontSize: 13 },
@@ -813,7 +831,7 @@ export function SnowballCalculator() {
                 },
               }}
             >
-              Add Debt
+              Add Debt +
             </Button>
           </Box>
         </Card>
@@ -891,13 +909,13 @@ export function SnowballCalculator() {
                         justifyContent="center"
                       >
                         <Typography variant="caption">
-                          Rate: {b.interestRate}%
+                          Rate: {formatNumber(b.interestRate)}%
                         </Typography>
                         <Typography variant="caption">
-                          Payment: ${b.monthlyPayment}/mo
+                          Payment: ${formatNumber(b.monthlyPayment)}/mo
                         </Typography>
                         <Typography variant="caption">
-                          Balance: ${b.currentBalance}
+                          Balance: ${formatNumber(b.currentBalance)}
                         </Typography>
                       </Stack>
                     </TableCell>

@@ -258,7 +258,7 @@ export default function HowItWorksPage() {
             <Grid item xs={12} md={6}>
               <Card sx={{ p: 3, height: "100%" }}>
                 <Typography variant="h5" gutterBottom>
-                  Traditional: Smallest Debt Balance First
+                  Traditional: Largest Interest Rate First
                 </Typography>
                 <Typography color="text.secondary" sx={{ mb: 5 }}>
                   Focus extra payments on the largest interest rate first.

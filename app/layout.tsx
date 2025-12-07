@@ -6,18 +6,89 @@ import { CssBaseline } from "@mui/material";
 import PostHogProvider from "@/components/PostHogProvider";
 import Navbar from "@/components/Navbar";
 import ThemeRegistry from "@/components/ThemeRegistry";
+import StructuredData from "@/components/StructuredData";
 
 const inter = Inter({ subsets: ["latin"] });
 
+const siteUrl =
+  process.env.NEXT_PUBLIC_SITE_URL || "https://daveramseysnowball.com";
+
 export const metadata: Metadata = {
-  title: "Snowball Calculator - Dave Ramsey Debt Payoff Tool",
+  metadataBase: new URL(siteUrl),
+  title: {
+    default:
+      "Dave Ramsey Snowball Calculator - Free Debt Payoff Tool | Free Debt Calculator",
+    template: "%s | Dave Ramsey Snowball Calculator",
+  },
   description:
-    "Calculate your debt payoff strategy using the Dave Ramsey snowball method. Get out of debt faster with our easy-to-use calculator.",
-  keywords:
-    "debt payoff, snowball method, Dave Ramsey, debt calculator, financial freedom",
+    "Free Dave Ramsey snowball method calculator. Calculate your debt payoff strategy and get out of debt faster. Track your progress, see your debt-free date, and achieve financial freedom.",
+  keywords: [
+    "debt payoff calculator",
+    "snowball method calculator",
+    "Dave Ramsey calculator",
+    "debt calculator",
+    "debt payoff strategy",
+    "snowball debt method",
+    "debt free calculator",
+    "financial freedom",
+    "debt elimination",
+    "debt payoff plan",
+    "debt snowball",
+    "pay off debt faster",
+    "debt reduction calculator",
+    "debt payoff schedule",
+  ],
+  authors: [{ name: "Dave Ramsey Snowball Calculator" }],
+  creator: "Dave Ramsey Snowball Calculator",
+  publisher: "Dave Ramsey Snowball Calculator",
+  formatDetection: {
+    email: false,
+    address: false,
+    telephone: false,
+  },
   icons: {
     icon: "/icon.PNG",
+    apple: "/icon.PNG",
   },
+  manifest: "/manifest.json",
+  openGraph: {
+    type: "website",
+    locale: "en_US",
+    url: siteUrl,
+    siteName: "Dave Ramsey Snowball Calculator",
+    title: "Dave Ramsey Snowball Calculator - Free Debt Payoff Tool",
+    description:
+      "Free Dave Ramsey snowball method calculator. Calculate your debt payoff strategy and get out of debt faster. Track your progress and achieve financial freedom.",
+    images: [
+      {
+        url: `${siteUrl}/icon.PNG`,
+        width: 1200,
+        height: 630,
+        alt: "Dave Ramsey Snowball Calculator - Free Debt Payoff Tool",
+      },
+    ],
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
+  verification: {
+    // Add your verification codes here when available
+    // google: "your-google-verification-code",
+    // yandex: "your-yandex-verification-code",
+    // bing: "your-bing-verification-code",
+  },
+  alternates: {
+    canonical: "/",
+  },
+  category: "finance",
 };
 
 export default function RootLayout({
@@ -31,6 +102,7 @@ export default function RootLayout({
         <body className={inter.className}>
           <ThemeRegistry>
             <CssBaseline />
+            <StructuredData type="WebApplication" />
             <PostHogProvider>
               <Navbar />
               <main className="min-h-screen">{children}</main>

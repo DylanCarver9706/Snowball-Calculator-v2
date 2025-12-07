@@ -1,0 +1,17 @@
+{
+  "name": "Dave Ramsey Snowball Calculator - Free Debt Payoff Tool",
+  "short_name": "Dave Ramsey Snowball Calculator",
+  "description": "Free Dave Ramsey snowball method calculator. Calculate your debt payoff strategy and get out of debt faster.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#2563eb",
+  "icons": [
+    {
+      "src": "/icon.PNG",
+      "sizes": "any",
+      "type": "image/png"
+    }
+  ]
+}
+

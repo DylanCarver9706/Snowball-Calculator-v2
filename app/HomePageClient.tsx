@@ -68,12 +68,14 @@ export default function HomePageClient() {
           <Grid container spacing={4} alignItems="center">
             <Grid item xs={12} md={6}>
               <Typography
-                variant="h2"
+                variant="h3"
                 component="h1"
                 gutterBottom
                 sx={{ fontWeight: "bold" }}
               >
-                Dave Ramsey Snowball Calculator
+                Dave Ramsey
+                <br />
+                Snowball Calculator
               </Typography>
               <Typography
                 variant="h5"
@@ -83,7 +85,11 @@ export default function HomePageClient() {
                 Use the Dave Ramsey Snowball Method to eliminate your debt and
                 achieve financial freedom.
               </Typography>
-              <Stack direction="row" spacing={2} sx={{ mb: 4 }}>
+              <Stack
+                direction={{ xs: "column", md: "row" }}
+                spacing={2}
+                sx={{ mb: 4 }}
+              >
                 <AuthRedirect mode="signUp">
                   <Button
                     variant="contained"
@@ -117,7 +123,7 @@ export default function HomePageClient() {
                     py: 1.5,
                   }}
                 >
-                  Learn How It Works
+                  How It Works
                 </Button>
               </Stack>
             </Grid>
@@ -128,6 +134,13 @@ export default function HomePageClient() {
                   justifyContent: "center",
                   alignItems: "center",
                   height: 400,
+                  border: {
+                    xs: "2px solid #1e293b", // Show border only on mobile
+                    md: "none", // Hide border on md and up
+                  },
+                  borderRadius: 3,
+                  boxSizing: "border-box",
+                  backgroundClip: "padding-box",
                 }}
               >
                 <SnowballCarouselAnimation />
@@ -255,7 +268,7 @@ export default function HomePageClient() {
             <Grid container spacing={2}>
               {features.map((feature, index) => (
                 <Grid item xs={12} sm={6} key={index}>
-                  <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                  <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
                     <CheckCircleIcon sx={{ color: "#2563eb" }} />
                     <Typography sx={{ color: "#1e293b" }}>{feature}</Typography>
                   </Box>

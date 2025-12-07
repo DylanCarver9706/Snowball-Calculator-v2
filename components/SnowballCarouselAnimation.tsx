@@ -50,28 +50,7 @@ export default function SnowballCarouselAnimation() {
           balance: 30000,
           color: "#ef4444",
           minPayment: 650,
-        }
-        // {
-        //   id: 6,
-        //   name: "Personal Loan",
-        //   balance: 3500,
-        //   color: "#14b8a6",
-        //   minPayment: 95,
-        // },
-        // {
-        //   id: 7,
-        //   name: "Student Loan",
-        //   balance: 15000,
-        //   color: "#10b981",
-        //   minPayment: 150,
-        // },
-        // {
-        //   id: 8,
-        //   name: "Car Loan",
-        //   balance: 8000,
-        //   color: "#f59e0b",
-        //   minPayment: 200,
-        // },
+        },
       ].sort((a, b) => a.minPayment - b.minPayment),
     []
   );
@@ -222,6 +201,19 @@ export default function SnowballCarouselAnimation() {
         justifyContent: "center",
       }}
     >
+      {/* Title */}
+      <Typography
+        variant="h6"
+        sx={{
+          color: "rgba(255,255,255,0.9)",
+          mb: 3,
+          fontWeight: 500,
+          textAlign: "center",
+        }}
+      >
+        Simulating Debt Payoff Journey...
+      </Typography>
+
       {/* Header: Total Debt */}
       <Box sx={{ width: "80%", mb: 3 }}>
         <Box sx={{ display: "flex", justifyContent: "space-between", mb: 1 }}>

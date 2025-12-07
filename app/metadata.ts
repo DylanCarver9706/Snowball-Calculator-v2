@@ -16,7 +16,7 @@ export const homeMetadata: Metadata = {
     siteName: "Dave Ramsey Snowball Calculator",
     images: [
       {
-        url: `${siteUrl}/icon.PNG`,
+        url: `${siteUrl}/favicon.ico`,
         width: 1200,
         height: 630,
         alt: "Dave Ramsey Snowball Calculator - Free Debt Payoff Tool",
@@ -42,7 +42,7 @@ export const calculatorMetadata: Metadata = {
     siteName: "Dave Ramsey Snowball Calculator",
     images: [
       {
-        url: `${siteUrl}/icon.PNG`,
+        url: `${siteUrl}/favicon.ico`,
         width: 1200,
         height: 630,
         alt: "Debt Snowball Calculator",
@@ -68,7 +68,7 @@ export const howItWorksMetadata: Metadata = {
     siteName: "Dave Ramsey Snowball Calculator",
     images: [
       {
-        url: `${siteUrl}/icon.PNG`,
+        url: `${siteUrl}/favicon.ico`,
         width: 1200,
         height: 630,
         alt: "How the Dave Ramsey Snowball Method Works",

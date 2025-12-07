@@ -16,9 +16,9 @@ export const homeMetadata: Metadata = {
     siteName: "Dave Ramsey Snowball Calculator",
     images: [
       {
-        url: `${siteUrl}/favicon.ico`,
-        width: 1200,
-        height: 630,
+        url: `${siteUrl}/icon.PNG`,
+        width: 634,
+        height: 637,
         alt: "Dave Ramsey Snowball Calculator - Free Debt Payoff Tool",
       },
     ],
@@ -42,9 +42,9 @@ export const calculatorMetadata: Metadata = {
     siteName: "Dave Ramsey Snowball Calculator",
     images: [
       {
-        url: `${siteUrl}/favicon.ico`,
-        width: 1200,
-        height: 630,
+        url: `${siteUrl}/icon.PNG`,
+        width: 634,
+        height: 637,
         alt: "Debt Snowball Calculator",
       },
     ],
@@ -57,20 +57,22 @@ export const calculatorMetadata: Metadata = {
 };
 
 export const howItWorksMetadata: Metadata = {
-  title: "How the Dave Ramsey Snowball Method Works - Dave Ramsey Debt Payoff Strategy",
+  title:
+    "How the Dave Ramsey Snowball Method Works - Dave Ramsey Debt Payoff Strategy",
   description:
     "Learn how the Dave Ramsey snowball method works. Understand the psychology behind paying off debt from smallest to largest, and see step-by-step how to implement this proven debt payoff strategy.",
   openGraph: {
-    title: "How the Dave Ramsey Snowball Method Works - Dave Ramsey Debt Payoff Strategy",
+    title:
+      "How the Dave Ramsey Snowball Method Works - Dave Ramsey Debt Payoff Strategy",
     description:
       "Learn how the Dave Ramsey snowball method works and how to implement this proven debt payoff strategy.",
     url: `${siteUrl}/how-it-works`,
     siteName: "Dave Ramsey Snowball Calculator",
     images: [
       {
-        url: `${siteUrl}/favicon.ico`,
-        width: 1200,
-        height: 630,
+        url: `${siteUrl}/icon.PNG`,
+        width: 634,
+        height: 637,
         alt: "How the Dave Ramsey Snowball Method Works",
       },
     ],

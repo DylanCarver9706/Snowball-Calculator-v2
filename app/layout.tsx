@@ -62,9 +62,9 @@ export const metadata: Metadata = {
       "Free Dave Ramsey snowball method calculator. Calculate your debt payoff strategy and get out of debt faster. Track your progress and achieve financial freedom.",
     images: [
       {
-        url: `${siteUrl}/favicon.ico`,
-        width: 1200,
-        height: 630,
+        url: `${siteUrl}/icon.PNG`,
+        width: 634,
+        height: 637,
         alt: "Dave Ramsey Snowball Calculator - Free Debt Payoff Tool",
       },
     ],

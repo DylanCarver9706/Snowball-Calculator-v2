@@ -25,7 +25,7 @@ export default function SnowballCarouselAnimation() {
         },
         {
           id: 2,
-          name: "Medical Bill",
+          name: "Medical Debt",
           balance: 3500,
           color: "#ef4444",
           minPayment: 150,
@@ -188,7 +188,7 @@ export default function SnowballCarouselAnimation() {
   }, []);
 
   const currentDebt = baseDebts[activeIndex] ?? baseDebts[baseDebts.length - 1];
-  const currentBalance = balances[activeIndex] ?? 0;
+  const balance = balances[activeIndex] ?? 0;
 
   return (
     <Box
@@ -294,9 +294,9 @@ export default function SnowballCarouselAnimation() {
             <Typography
               sx={{ color: "white", fontWeight: 600, fontSize: "1.1rem" }}
             >
-              ${Math.max(0, Math.round(currentBalance)).toLocaleString()}
+              ${Math.max(0, Math.round(balance)).toLocaleString()}
             </Typography>
-            {currentBalance > 0 && (
+            {balance > 0 && (
               <Typography
                 variant="caption"
                 sx={{ color: "rgba(255,255,255,0.6)" }}

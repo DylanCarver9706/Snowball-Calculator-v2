@@ -1,4 +1,4 @@
-import { Bill } from "./types";
+import { Debt } from "./types";
 
 // Type for each month's data for a debt
 export interface DebtMonth {
@@ -12,13 +12,13 @@ export interface DebtMonth {
 }
 
 // Type for the output structure
-export interface DebtWithSchedule extends Bill {
+export interface DebtWithSchedule extends Debt {
   months: DebtMonth[];
 }
 
 // Main snowball calculation
 export function calculateSnowball(
-  debts: Bill[],
+  debts: Debt[],
   monthlyExtra: number
 ): DebtWithSchedule[] {
   // No sorting here; process debts in the order provided
@@ -30,8 +30,8 @@ export function calculateSnowball(
   // 3. Track freed minimums - initialize with debts that start at 0 balance
   let freedMinimums = 0;
   debtSchedules.forEach((debt, idx) => {
-    if (debt.currentBalance <= 0) {
-      freedMinimums += debt.monthlyPayment;
+    if (debt.balance <= 0) {
+      freedMinimums += debt.amount;
     }
   });
   let month = 0;
@@ -41,7 +41,7 @@ export function calculateSnowball(
   const payoffMonth: number[] = Array(debtSchedules.length).fill(Infinity);
 
   // 5. Track current balances
-  let balances = debtSchedules.map((d) => d.currentBalance);
+  let balances = debtSchedules.map((d) => d.balance);
 
   // 6. Loop until all debts are paid off or safety cap
   while (!allPaidOff && month < 1000) {
@@ -53,7 +53,7 @@ export function calculateSnowball(
     while (i < debtSchedules.length && balances[i] <= 0) i++;
     // For the first unpaid debt, available = min + freed + snowball
     if (i < debtSchedules.length) {
-      available = debtSchedules[i].monthlyPayment + localFreed + monthlyExtra;
+      available = debtSchedules[i].amount + localFreed + monthlyExtra;
       snowballUsed = true;
     } else {
       // All debts are paid off, but we still need to create month entries
@@ -65,7 +65,7 @@ export function calculateSnowball(
           principalPaid: 0,
           interestPaid: 0,
           usedSnowball: false,
-          rollover: debt.monthlyPayment,
+          rollover: debt.amount,
           info: "This debt is paid off. Monthly payment rolls over to next debt.",
         });
       }
@@ -94,7 +94,7 @@ export function calculateSnowball(
               principalPaid: 0,
               interestPaid: 0,
               usedSnowball: false,
-              rollover: debt.monthlyPayment,
+              rollover: debt.amount,
               info: "This debt is already paid off. Monthly payment rolls over to next debt.",
             });
           } else {
@@ -105,7 +105,7 @@ export function calculateSnowball(
               principalPaid: 0,
               interestPaid: 0,
               usedSnowball: false,
-              rollover: debt.monthlyPayment,
+              rollover: debt.amount,
               info: "This debt is already paid off. Monthly payment rolls over to next debt.",
             });
           }
@@ -124,7 +124,7 @@ export function calculateSnowball(
         continue;
       }
       let infoParts: string[] = [];
-      let minPart = `Min payment: $${debt.monthlyPayment.toFixed(2)}`;
+      let minPart = `Min payment: $${debt.amount.toFixed(2)}`;
       let freedPart = "";
       let snowballPart = "";
       let rolloverPart = "";
@@ -137,11 +137,11 @@ export function calculateSnowball(
         snowballUsed = false;
       } else {
         // For subsequent debts, only use min + rollover
-        available = debt.monthlyPayment + available;
-        if (available > debt.monthlyPayment) {
-          rolloverPart = ` + Rollover: $${(
-            available - debt.monthlyPayment
-          ).toFixed(2)}`;
+        available = debt.amount + available;
+        if (available > debt.amount) {
+          rolloverPart = ` + Rollover: $${(available - debt.amount).toFixed(
+            2
+          )}`;
         }
       }
       // Calculate interest
@@ -179,7 +179,7 @@ export function calculateSnowball(
         (newBalance < 0 ? 0 : newBalance) === 0 &&
         payoffMonth[j] === Infinity
       ) {
-        localFreed += debt.monthlyPayment;
+        localFreed += debt.amount;
         payoffMonth[j] = month;
       }
       // Rollover is only for the next debt in the same month

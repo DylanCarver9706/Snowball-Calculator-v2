@@ -2,7 +2,7 @@
 
 import React, { useEffect, useMemo, useState } from "react";
 import { useClerk, useUser } from "@clerk/nextjs";
-import type { Bill } from "@/lib/types";
+import type { Debt } from "@/lib/types";
 import {
   calculateSnowball,
   type DebtWithSchedule,
@@ -33,12 +33,12 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import confetti from "canvas-confetti";
 
-function getDefaultBill(): Bill {
+function getDefaultDebt(): Debt {
   return {
     name: "New Debt",
     interestRate: 10,
-    monthlyPayment: 50,
-    currentBalance: 10000,
+    amount: 50,
+    balance: 10000,
   };
 }
 
@@ -50,22 +50,22 @@ function formatNumber(value: number | string | undefined | null): string {
   return num.toFixed(2);
 }
 
-// Normalize a bill's numeric values to ensure 2 decimal precision
-function normalizeBill(bill: Bill): Bill {
+// Normalize a debt's numeric values to ensure 2 decimal precision
+function normalizeDebt(debt: Debt): Debt {
   return {
-    ...bill,
-    interestRate: parseFloat((bill.interestRate || 0).toFixed(2)),
-    monthlyPayment: parseFloat((bill.monthlyPayment || 0).toFixed(2)),
-    currentBalance: parseFloat((bill.currentBalance || 0).toFixed(2)),
+    ...debt,
+    interestRate: parseFloat((debt.interestRate || 0).toFixed(2)),
+    amount: parseFloat((debt.amount || 0).toFixed(2)),
+    balance: parseFloat((debt.balance || 0).toFixed(2)),
   };
 }
 
 export function SnowballCalculator() {
   const { user, isLoaded } = useUser();
   const [monthlyContribution, setMonthlyContribution] = useState<number>(100);
-  const [bills, setBills] = useState<Bill[]>([]);
+  const [debts, setDebts] = useState<Debt[]>([]);
   const [editing, setEditing] = useState<boolean>(false);
-  const [editBills, setEditBills] = useState<Bill[] | null>(null);
+  const [editDebts, setEditDebts] = useState<Debt[] | null>(null);
   const [editMonthlyContribution, setEditMonthlyContribution] = useState<
     number | null
   >(null);
@@ -79,43 +79,43 @@ export function SnowballCalculator() {
   useEffect(() => {
     if (isLoaded && user) {
       const metadata = user.publicMetadata as any;
-      if (parseInt(metadata?.monthlyContribution) >= 0 && metadata?.bills) {
+      if (parseInt(metadata?.monthlyContribution) >= 0 && metadata?.debts) {
         setMonthlyContribution(parseInt(metadata.monthlyContribution));
-        // Normalize bills to ensure 2 decimal precision
-        const normalizedBills = (metadata.bills as Bill[]).map(normalizeBill);
-        setBills(normalizedBills);
+        // Normalize debts to ensure 2 decimal precision
+        const normalizedDebts = (metadata.debts as Debt[]).map(normalizeDebt);
+        setDebts(normalizedDebts);
       } else {
         // Seed with sample debts
-        setBills([
+        setDebts([
           {
             name: "Store Card",
             interestRate: 15,
-            monthlyPayment: 45,
-            currentBalance: 1200,
+            amount: 45,
+            balance: 1200,
           },
           {
-            name: "Medical Bill",
+            name: "Medical Debt",
             interestRate: 0,
-            monthlyPayment: 150,
-            currentBalance: 3500,
+            amount: 150,
+            balance: 3500,
           },
           {
             name: "Credit Card",
             interestRate: 26,
-            monthlyPayment: 250,
-            currentBalance: 20000,
+            amount: 250,
+            balance: 20000,
           },
           {
             name: "Personal Loan",
             interestRate: 8,
-            monthlyPayment: 500,
-            currentBalance: 10000,
+            amount: 500,
+            balance: 10000,
           },
           {
             name: "Car Loan",
             interestRate: 6,
-            monthlyPayment: 650,
-            currentBalance: 30000,
+            amount: 650,
+            balance: 30000,
           },
         ]);
       }
@@ -132,7 +132,7 @@ export function SnowballCalculator() {
 
   // Save data to Clerk metadata
   const saveToMetadata = async (
-    newBills: Bill[],
+    newDebts: Debt[],
     newMonthlyContribution: number
   ) => {
     if (!user) return;
@@ -143,7 +143,7 @@ export function SnowballCalculator() {
         body: JSON.stringify({
           metadata: {
             monthlyContribution: newMonthlyContribution,
-            bills: newBills,
+            debts: newDebts,
           },
         }),
       });
@@ -154,16 +154,16 @@ export function SnowballCalculator() {
   };
 
   // Derived and calculated data
-  const sortedBills = useMemo(() => {
-    return [...bills].sort((a, b) => a.currentBalance - b.currentBalance);
-  }, [bills]);
+  const sortedDebts = useMemo(() => {
+    return [...debts].sort((a, b) => a.balance - b.balance);
+  }, [debts]);
 
   const calculation: DebtWithSchedule[] = useMemo(() => {
-    if (sortedBills.length === 0) return [] as DebtWithSchedule[];
-    let snowballedResult = calculateSnowball(sortedBills, monthlyContribution);
+    if (sortedDebts.length === 0) return [] as DebtWithSchedule[];
+    let snowballedResult = calculateSnowball(sortedDebts, monthlyContribution);
     // console.log("snowballedResult", snowballedResult);
     return snowballedResult;
-  }, [sortedBills, monthlyContribution]);
+  }, [sortedDebts, monthlyContribution]);
 
   const maxMonths = useMemo(() => {
     if (calculation.length === 0) return 0;
@@ -172,76 +172,74 @@ export function SnowballCalculator() {
 
   // Editing handlers
   const startEdit = () => {
-    // Sort bills: debts with balance > 0 first, then debts with balance 0 at bottom
-    const sortedBills = [...bills].sort((a, b) => {
-      if (a.currentBalance === 0 && b.currentBalance !== 0) return 1;
-      if (a.currentBalance !== 0 && b.currentBalance === 0) return -1;
-      return a.currentBalance - b.currentBalance;
+    // Sort debts: debts with balance > 0 first, then debts with balance 0 at bottom
+    const sortedDebts = [...debts].sort((a, b) => {
+      if (a.balance === 0 && b.balance !== 0) return 1;
+      if (a.balance !== 0 && b.balance === 0) return -1;
+      return a.balance - b.balance;
     });
-    // Normalize bills to ensure 2 decimal precision
-    const normalizedBills = sortedBills.map(normalizeBill);
-    setEditBills(JSON.parse(JSON.stringify(normalizedBills)));
+    // Normalize debts to ensure 2 decimal precision
+    const normalizedDebts = sortedDebts.map(normalizeDebt);
+    setEditDebts(JSON.parse(JSON.stringify(normalizedDebts)));
     setEditMonthlyContribution(monthlyContribution);
     setEditing(true);
   };
 
   const cancelEdit = () => {
-    setEditBills(null);
+    setEditDebts(null);
     setEditMonthlyContribution(null);
     setEditing(false);
   };
 
   const saveEdit = async () => {
-    if (editBills && editMonthlyContribution !== null) {
-      // Normalize bills to ensure 2 decimal precision
-      const normalizedBills = editBills.map(normalizeBill);
-      // Sort bills: debts with balance > 0 first, then debts with balance 0 at bottom
-      const sorted = [...normalizedBills].sort((a, b) => {
-        if (a.currentBalance === 0 && b.currentBalance !== 0) return 1;
-        if (a.currentBalance !== 0 && b.currentBalance === 0) return -1;
-        return a.currentBalance - b.currentBalance;
+    if (editDebts && editMonthlyContribution !== null) {
+      // Normalize debts to ensure 2 decimal precision
+      const normalizedDebts = editDebts.map(normalizeDebt);
+      // Sort debts: debts with balance > 0 first, then debts with balance 0 at bottom
+      const sorted = [...normalizedDebts].sort((a, b) => {
+        if (a.balance === 0 && b.balance !== 0) return 1;
+        if (a.balance !== 0 && b.balance === 0) return -1;
+        return a.balance - b.balance;
       });
-      setBills(sorted);
+      setDebts(sorted);
       setMonthlyContribution(editMonthlyContribution);
       await saveToMetadata(sorted, editMonthlyContribution);
     }
-    setEditBills(null);
+    setEditDebts(null);
     setEditMonthlyContribution(null);
     setEditing(false);
   };
 
-  const handleEditBillChange = (
+  const handleEditDebtChange = (
     index: number,
-    field: keyof Bill,
+    field: keyof Debt,
     value: string | number
   ) => {
-    setEditBills((prev) => {
+    setEditDebts((prev) => {
       if (!prev) return prev;
       const updated = [...prev];
       const parsed =
         typeof value === "string" &&
-        (field === "interestRate" ||
-          field === "monthlyPayment" ||
-          field === "currentBalance")
+        (field === "interestRate" || field === "amount" || field === "balance")
           ? Number(value)
           : value;
-      updated[index] = { ...updated[index], [field]: parsed } as Bill;
+      updated[index] = { ...updated[index], [field]: parsed } as Debt;
 
       return updated;
     });
   };
 
-  const handleEditAddBill = () =>
-    setEditBills((prev) => (prev ? [...prev, getDefaultBill()] : prev));
+  const handleEditAddDebt = () =>
+    setEditDebts((prev) => (prev ? [...prev, getDefaultDebt()] : prev));
 
-  const handleEditDeleteBill = (index: number) => {
+  const handleEditDeleteDebt = (index: number) => {
     setDeleteIndex(index);
     setDeleteDialogOpen(true);
   };
 
-  const confirmDeleteBill = () => {
+  const confirmDeleteDebt = () => {
     if (deleteIndex !== null) {
-      setEditBills((prev) => {
+      setEditDebts((prev) => {
         if (!prev) return prev;
         const updated = [...prev];
         updated.splice(deleteIndex, 1);
@@ -252,22 +250,22 @@ export function SnowballCalculator() {
     setDeleteIndex(null);
   };
 
-  const cancelDeleteBill = () => {
+  const cancelDeleteDebt = () => {
     setDeleteDialogOpen(false);
     setDeleteIndex(null);
   };
 
   const handleMarkPaidOff = (index: number) => {
-    setEditBills((prev) => {
+    setEditDebts((prev) => {
       if (!prev) return prev;
       const updated = [...prev];
-      updated[index] = { ...updated[index], currentBalance: 0 };
+      updated[index] = { ...updated[index], balance: 0 };
 
       // Reorder: debts with balance > 0 first, then debts with balance 0 at bottom
       const reordered = updated.sort((a, b) => {
-        if (a.currentBalance === 0 && b.currentBalance !== 0) return 1;
-        if (a.currentBalance !== 0 && b.currentBalance === 0) return -1;
-        return a.currentBalance - b.currentBalance;
+        if (a.balance === 0 && b.balance !== 0) return 1;
+        if (a.balance !== 0 && b.balance === 0) return -1;
+        return a.balance - b.balance;
       });
 
       // Trigger confetti animation
@@ -439,8 +437,8 @@ export function SnowballCalculator() {
             </Typography>
             <Typography variant="h6" color="primary">
               $
-              {bills
-                .reduce((sum, b) => sum + Number(b.currentBalance), 0)
+              {debts
+                .reduce((sum, b) => sum + Number(b.balance), 0)
                 .toLocaleString(undefined, { maximumFractionDigits: 2 })}
             </Typography>
           </Box>
@@ -452,8 +450,8 @@ export function SnowballCalculator() {
             </Typography>
             <Typography variant="h6" color="primary">
               $
-              {bills
-                .reduce((sum, b) => sum + Number(b.monthlyPayment), 0)
+              {debts
+                .reduce((sum, b) => sum + Number(b.amount), 0)
                 .toLocaleString(undefined, { maximumFractionDigits: 2 })}{" "}
               / month
             </Typography>
@@ -466,9 +464,9 @@ export function SnowballCalculator() {
             </Typography>
             <Typography variant="h6" color="primary">
               $
-              {bills
-                .filter((b) => b.currentBalance === 0)
-                .reduce((sum, b) => sum + Number(b.monthlyPayment), 0)
+              {debts
+                .filter((b) => b.balance === 0)
+                .reduce((sum, b) => sum + Number(b.amount), 0)
                 .toLocaleString(undefined, { maximumFractionDigits: 2 })}
               {" / month"}
             </Typography>
@@ -508,7 +506,7 @@ export function SnowballCalculator() {
         >
           {/* Mobile-friendly editor */}
           <Stack spacing={2} sx={{ display: { xs: "block", sm: "none" } }}>
-            {editBills?.map((bill, idx) => (
+            {editDebts?.map((debt, idx) => (
               <Box
                 key={idx}
                 sx={{
@@ -536,9 +534,9 @@ export function SnowballCalculator() {
                     fullWidth
                     size="small"
                     label="Debt Name"
-                    value={bill.name}
+                    value={debt.name}
                     onChange={(e) =>
-                      handleEditBillChange(idx, "name", e.target.value)
+                      handleEditDebtChange(idx, "name", e.target.value)
                     }
                     sx={{
                       width: "100%",
@@ -553,9 +551,9 @@ export function SnowballCalculator() {
                     type="number"
                     size="small"
                     label="Interest Rate (%)"
-                    value={bill.interestRate}
+                    value={debt.interestRate}
                     onChange={(e) =>
-                      handleEditBillChange(idx, "interestRate", e.target.value)
+                      handleEditDebtChange(idx, "interestRate", e.target.value)
                     }
                     inputProps={{ min: 0, step: 0.01 }}
                     fullWidth
@@ -572,13 +570,9 @@ export function SnowballCalculator() {
                     type="number"
                     size="small"
                     label="Monthly Minimum Payment"
-                    value={bill.monthlyPayment}
+                    value={debt.amount}
                     onChange={(e) =>
-                      handleEditBillChange(
-                        idx,
-                        "monthlyPayment",
-                        e.target.value
-                      )
+                      handleEditDebtChange(idx, "amount", e.target.value)
                     }
                     inputProps={{ min: 0, step: 0.01 }}
                     fullWidth
@@ -595,13 +589,9 @@ export function SnowballCalculator() {
                     type="number"
                     size="small"
                     label="Balance"
-                    value={bill.currentBalance}
+                    value={debt.balance}
                     onChange={(e) =>
-                      handleEditBillChange(
-                        idx,
-                        "currentBalance",
-                        e.target.value
-                      )
+                      handleEditDebtChange(idx, "balance", e.target.value)
                     }
                     inputProps={{ min: 0, step: 0.01 }}
                     fullWidth
@@ -626,7 +616,7 @@ export function SnowballCalculator() {
                       size="small"
                       startIcon={<CheckCircleIcon />}
                       onClick={() => handleMarkPaidOff(idx)}
-                      disabled={bill.currentBalance === 0}
+                      disabled={debt.balance === 0}
                       sx={{
                         backgroundColor: "rgba(255,255,255,0.2)",
                         color: "white",
@@ -645,7 +635,7 @@ export function SnowballCalculator() {
                     </Button>
                     <IconButton
                       color="error"
-                      onClick={() => handleEditDeleteBill(idx)}
+                      onClick={() => handleEditDeleteDebt(idx)}
                       size="small"
                       sx={{
                         flexShrink: 0,
@@ -665,7 +655,7 @@ export function SnowballCalculator() {
           >
             <Button
               variant="contained"
-              onClick={handleEditAddBill}
+              onClick={handleEditAddDebt}
               fullWidth
               sx={{
                 background:
@@ -705,15 +695,15 @@ export function SnowballCalculator() {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {editBills?.map((bill, idx) => (
+                {editDebts?.map((debt, idx) => (
                   <TableRow key={idx} hover>
                     <TableCell sx={{ width: { sm: 360, md: 420 } }}>
                       <TextField
                         fullWidth
                         size="small"
-                        value={bill.name}
+                        value={debt.name}
                         onChange={(e) =>
-                          handleEditBillChange(idx, "name", e.target.value)
+                          handleEditDebtChange(idx, "name", e.target.value)
                         }
                       />
                     </TableCell>
@@ -722,9 +712,9 @@ export function SnowballCalculator() {
                         <TextField
                           type="number"
                           size="small"
-                          value={bill.interestRate}
+                          value={debt.interestRate}
                           onChange={(e) =>
-                            handleEditBillChange(
+                            handleEditDebtChange(
                               idx,
                               "interestRate",
                               e.target.value
@@ -745,13 +735,9 @@ export function SnowballCalculator() {
                       <TextField
                         type="number"
                         size="small"
-                        value={bill.monthlyPayment}
+                        value={debt.amount}
                         onChange={(e) =>
-                          handleEditBillChange(
-                            idx,
-                            "monthlyPayment",
-                            e.target.value
-                          )
+                          handleEditDebtChange(idx, "amount", e.target.value)
                         }
                         inputProps={{ min: 0, step: 0.01 }}
                         sx={{
@@ -764,13 +750,9 @@ export function SnowballCalculator() {
                       <TextField
                         type="number"
                         size="small"
-                        value={bill.currentBalance}
+                        value={debt.balance}
                         onChange={(e) =>
-                          handleEditBillChange(
-                            idx,
-                            "currentBalance",
-                            e.target.value
-                          )
+                          handleEditDebtChange(idx, "balance", e.target.value)
                         }
                         inputProps={{ min: 0, step: 0.01 }}
                         sx={{
@@ -790,7 +772,7 @@ export function SnowballCalculator() {
                           size="small"
                           startIcon={<CheckCircleIcon />}
                           onClick={() => handleMarkPaidOff(idx)}
-                          disabled={bill.currentBalance === 0}
+                          disabled={debt.balance === 0}
                           sx={{
                             textTransform: "none",
                             fontSize: "0.75rem",
@@ -800,7 +782,7 @@ export function SnowballCalculator() {
                         </Button>
                         <IconButton
                           color="error"
-                          onClick={() => handleEditDeleteBill(idx)}
+                          onClick={() => handleEditDeleteDebt(idx)}
                         >
                           <DeleteIcon fontSize="small" />
                         </IconButton>
@@ -818,7 +800,7 @@ export function SnowballCalculator() {
           >
             <Button
               variant="contained"
-              onClick={handleEditAddBill}
+              onClick={handleEditAddDebt}
               fullWidth
               sx={{
                 background:
@@ -894,7 +876,7 @@ export function SnowballCalculator() {
                   >
                     Month
                   </TableCell>
-                  {sortedBills.map((b, idx) => (
+                  {sortedDebts.map((b, idx) => (
                     <TableCell
                       key={idx}
                       align="center"
@@ -912,10 +894,10 @@ export function SnowballCalculator() {
                           Rate: {formatNumber(b.interestRate)}%
                         </Typography>
                         <Typography variant="caption">
-                          Payment: ${formatNumber(b.monthlyPayment)}/mo
+                          Payment: ${formatNumber(b.amount)}/mo
                         </Typography>
                         <Typography variant="caption">
-                          Balance: ${formatNumber(b.currentBalance)}
+                          Balance: ${formatNumber(b.balance)}
                         </Typography>
                       </Stack>
                     </TableCell>
@@ -1044,17 +1026,17 @@ export function SnowballCalculator() {
       {/* Delete Confirmation Dialog */}
       <Dialog
         open={deleteDialogOpen}
-        onClose={cancelDeleteBill}
+        onClose={cancelDeleteDebt}
         aria-labelledby="delete-dialog-title"
         aria-describedby="delete-dialog-description"
       >
         <DialogTitle id="delete-dialog-title">Delete Debt</DialogTitle>
         <DialogContent>
           <DialogContentText id="delete-dialog-description">
-            {deleteIndex !== null && editBills && editBills[deleteIndex] ? (
+            {deleteIndex !== null && editDebts && editDebts[deleteIndex] ? (
               <>
                 Are you sure you want to delete{" "}
-                <strong>{editBills[deleteIndex].name}</strong>? This action
+                <strong>{editDebts[deleteIndex].name}</strong>? This action
                 cannot be undone.
               </>
             ) : (
@@ -1063,11 +1045,11 @@ export function SnowballCalculator() {
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={cancelDeleteBill} color="primary">
+          <Button onClick={cancelDeleteDebt} color="primary">
             Cancel
           </Button>
           <Button
-            onClick={confirmDeleteBill}
+            onClick={confirmDeleteDebt}
             color="error"
             variant="contained"
             autoFocus

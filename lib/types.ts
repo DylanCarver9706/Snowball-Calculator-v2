@@ -1,14 +1,14 @@
-export interface Bill {
+export interface Debt {
   name: string;
   interestRate: number;
-  monthlyPayment: number;
-  currentBalance: number;
+  amount: number;
+  balance: number;
 }
 
 export interface SnowballMonth {
   month: number;
-  bills: {
-    [billId: string]: {
+  debts: {
+    [debtId: string]: {
       payment: number;
       remainingBalance: number;
       interestPaid: number;
@@ -21,6 +21,6 @@ export interface SnowballMonth {
 
 export interface SnowballCalculation {
   monthlyContribution: number;
-  bills: Bill[];
+  debts: Debt[];
   months: SnowballMonth[];
 }

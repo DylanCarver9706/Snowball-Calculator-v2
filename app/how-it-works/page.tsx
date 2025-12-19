@@ -27,6 +27,7 @@ import {
   CheckCircle as CheckCircleIcon,
   ArrowForward as ArrowForwardIcon,
 } from "@mui/icons-material";
+import AuthRedirect from "@/components/AuthRedirect";
 
 export default function HowItWorksPage() {
   const steps = [
@@ -120,16 +121,16 @@ export default function HowItWorksPage() {
               </Typography>
 
               <Box sx={{ mt: 4, textAlign: "center" }}>
-                <Button
-                  component="a"
-                  href="/calculator"
-                  variant="contained"
-                  size="large"
-                  endIcon={<ArrowForwardIcon />}
-                  sx={{ mr: 2 }}
-                >
-                  Try the Calculator
-                </Button>
+                <AuthRedirect mode="signUp">
+                  <Button
+                    variant="contained"
+                    size="large"
+                    endIcon={<ArrowForwardIcon />}
+                    sx={{ mr: 2 }}
+                  >
+                    Try the Calculator
+                  </Button>
+                </AuthRedirect>
               </Box>
             </Grid>
 
@@ -406,24 +407,24 @@ export default function HowItWorksPage() {
             Our calculator will help you create a personalized debt payoff plan
             using the snowball method.
           </Typography>
-          <Button
-            component="a"
-            href="/calculator"
-            variant="contained"
-            size="large"
-            sx={{
-              backgroundColor: "white",
-              color: "primary.main",
-              px: 6,
-              py: 2,
-              fontSize: "1.1rem",
-              "&:hover": {
-                backgroundColor: "grey.100",
-              },
-            }}
-          >
-            Start Your Debt-Free Journey
-          </Button>
+          <AuthRedirect mode="signUp">
+            <Button
+              variant="contained"
+              size="large"
+              sx={{
+                backgroundColor: "white",
+                color: "primary.main",
+                px: 6,
+                py: 2,
+                fontSize: "1.1rem",
+                "&:hover": {
+                  backgroundColor: "grey.100",
+                },
+              }}
+            >
+              Start Your Debt-Free Journey
+            </Button>
+          </AuthRedirect>
         </Container>
       </Box>
     </Box>

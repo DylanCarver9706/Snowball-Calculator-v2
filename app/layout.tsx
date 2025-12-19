@@ -5,6 +5,7 @@ import { ClerkProvider } from "@clerk/nextjs";
 import { CssBaseline } from "@mui/material";
 import PostHogProvider from "@/components/PostHogProvider";
 import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
 import ThemeRegistry from "@/components/ThemeRegistry";
 import StructuredData from "@/components/StructuredData";
 
@@ -107,6 +108,7 @@ export default function RootLayout({
             <PostHogProvider>
               <Navbar />
               <main className="min-h-screen">{children}</main>
+              <Footer />
             </PostHogProvider>
           </ThemeRegistry>
         </body>

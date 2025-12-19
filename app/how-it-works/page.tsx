@@ -309,7 +309,7 @@ export default function HowItWorksPage() {
                       </TableRow>
                       <TableRow>
                         <TableCell>5</TableCell>
-                        <TableCell>Medical Bill</TableCell>
+                        <TableCell>Medical Debt</TableCell>
                         <TableCell align="right">$3,500</TableCell>
                         <TableCell align="right">0%</TableCell>
                         <TableCell align="right">$150</TableCell>
@@ -354,7 +354,7 @@ export default function HowItWorksPage() {
                       </TableRow>
                       <TableRow>
                         <TableCell>2</TableCell>
-                        <TableCell>Medical Bill</TableCell>
+                        <TableCell>Medical Debt</TableCell>
                         <TableCell align="right">$3,500</TableCell>
                         <TableCell align="right">0%</TableCell>
                         <TableCell align="right">$150</TableCell>
@@ -406,24 +406,24 @@ export default function HowItWorksPage() {
             Our calculator will help you create a personalized debt payoff plan
             using the snowball method.
           </Typography>
-            <Button
-              component="a"
-              href="/calculator"
-              variant="contained"
-              size="large"
-              sx={{
-                backgroundColor: "white",
-                color: "primary.main",
-                px: 6,
-                py: 2,
-                fontSize: "1.1rem",
-                "&:hover": {
-                  backgroundColor: "grey.100",
-                },
-              }}
-            >
-              Start Your Debt-Free Journey
-            </Button>
+          <Button
+            component="a"
+            href="/calculator"
+            variant="contained"
+            size="large"
+            sx={{
+              backgroundColor: "white",
+              color: "primary.main",
+              px: 6,
+              py: 2,
+              fontSize: "1.1rem",
+              "&:hover": {
+                backgroundColor: "grey.100",
+              },
+            }}
+          >
+            Start Your Debt-Free Journey
+          </Button>
         </Container>
       </Box>
     </Box>

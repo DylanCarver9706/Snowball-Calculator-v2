@@ -83,3 +83,55 @@ export const howItWorksMetadata: Metadata = {
     canonical: `${siteUrl}/how-it-works`,
   },
 };
+
+export const termsOfServiceMetadata: Metadata = {
+  title: "Terms of Service - Dave Ramsey Snowball Calculator",
+  description:
+    "Read the Terms of Service for the Dave Ramsey Snowball Calculator. Understand the terms and conditions for using our free debt payoff calculator.",
+  openGraph: {
+    title: "Terms of Service - Dave Ramsey Snowball Calculator",
+    description:
+      "Read the Terms of Service for the Dave Ramsey Snowball Calculator.",
+    url: `${siteUrl}/terms-of-service`,
+    siteName: "Dave Ramsey Snowball Calculator",
+    images: [
+      {
+        url: `${siteUrl}/icon.PNG`,
+        width: 634,
+        height: 637,
+        alt: "Terms of Service",
+      },
+    ],
+    locale: "en_US",
+    type: "website",
+  },
+  alternates: {
+    canonical: `${siteUrl}/terms-of-service`,
+  },
+};
+
+export const privacyPolicyMetadata: Metadata = {
+  title: "Privacy Policy - Dave Ramsey Snowball Calculator",
+  description:
+    "Read the Privacy Policy for the Dave Ramsey Snowball Calculator. Learn how we collect, use, and protect your information.",
+  openGraph: {
+    title: "Privacy Policy - Dave Ramsey Snowball Calculator",
+    description:
+      "Read the Privacy Policy for the Dave Ramsey Snowball Calculator.",
+    url: `${siteUrl}/privacy-policy`,
+    siteName: "Dave Ramsey Snowball Calculator",
+    images: [
+      {
+        url: `${siteUrl}/icon.PNG`,
+        width: 634,
+        height: 637,
+        alt: "Privacy Policy",
+      },
+    ],
+    locale: "en_US",
+    type: "website",
+  },
+  alternates: {
+    canonical: `${siteUrl}/privacy-policy`,
+  },
+};

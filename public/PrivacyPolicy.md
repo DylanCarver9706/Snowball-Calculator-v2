@@ -2,7 +2,7 @@
 
 **Last updated:** January 1, 2025
 
-This Privacy Policy explains how Dave Ramsey Snowball Calculator (the “Service,” “we,” “us,” or “our”) collects, uses, and protects user information. By using the Service, you agree to the practices described in this policy.
+This Privacy Policy explains how My Debt Snowball (the “Service,” “we,” “us,” or “our”) collects, uses, and protects user information. By using the Service, you agree to the practices described in this policy.
 
 ---
 

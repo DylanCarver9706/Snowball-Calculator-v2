@@ -10,14 +10,14 @@ export default function StructuredData({
   data,
 }: StructuredDataProps) {
   const siteUrl =
-    process.env.NEXT_PUBLIC_SITE_URL || "https://daveramseysnowball.com";
+    process.env.NEXT_PUBLIC_SITE_URL || "https://mydebtsnowball.com";
 
   const defaultData = {
     "@context": "https://schema.org",
     "@type": type,
-    name: "Dave Ramsey Snowball Calculator - Free Debt Payoff Tool",
+    name: "My Debt Snowball - Free Debt Payoff Tool",
     description:
-      "Free Dave Ramsey snowball method calculator. Calculate your debt payoff strategy and get out of debt faster.",
+      "Free Debt Snowball Method calculator. Calculate your debt payoff strategy and get out of debt faster.",
     url: siteUrl,
     applicationCategory: "FinanceApplication",
     operatingSystem: "Web",

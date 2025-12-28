@@ -73,16 +73,14 @@ export default function HomePageClient() {
                 gutterBottom
                 sx={{ fontWeight: "bold" }}
               >
-                Dave Ramsey
-                <br />
-                Snowball Calculator
+                My Debt Snowball
               </Typography>
               <Typography
                 variant="h5"
                 gutterBottom
                 sx={{ mb: 3, opacity: 0.9 }}
               >
-                Use the Dave Ramsey Snowball Method to eliminate your debt and
+                Use the Debt Snowball Method to eliminate your debt and
                 achieve financial freedom.
               </Typography>
               <Stack
@@ -167,7 +165,7 @@ export default function HomePageClient() {
             textAlign="center"
             sx={{ mb: 6, color: "#64748b" }}
           >
-            The psychology behind Dave Ramsey's proven debt payoff strategy
+            The psychology behind the Debt Snowball Method's proven debt payoff strategy
           </Typography>
 
           <Grid container spacing={4}>

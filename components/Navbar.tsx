@@ -54,7 +54,7 @@ const Navbar = () => {
       }}
     >
       <Typography variant="h6" sx={{ my: 2, px: 2, color: "white" }}>
-        Dave Ramsey Snowball Calculator
+        My Debt Snowball
       </Typography>
       <List>
         {navItems.map((item) => (
@@ -103,7 +103,7 @@ const Navbar = () => {
               gap: 1,
             }}
           >
-            Dave Ramsey Snowball Calculator
+            My Debt Snowball
           </Typography>
 
           {isMobile ? (

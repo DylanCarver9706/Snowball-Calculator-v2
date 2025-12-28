@@ -9,15 +9,7 @@ const faqData = {
       name: "What is the debt snowball method?",
       acceptedAnswer: {
         "@type": "Answer",
-        text: "The debt snowball method is a debt payoff strategy popularized by Dave Ramsey where you pay off your debts in order of smallest to largest balance, regardless of interest rate. As each debt is paid off, you roll the payment amount into the next smallest debt, creating a 'snowball' effect.",
-      },
-    },
-    {
-      "@type": "Question",
-      name: "What is the Dave Ramsey debt snowball method?",
-      acceptedAnswer: {
-        "@type": "Answer",
-        text: "The debt snowball method is a debt payoff strategy popularized by Dave Ramsey where you pay off your debts in order of smallest to largest balance, regardless of interest rate. As each debt is paid off, you roll the payment amount into the next smallest debt, creating a 'snowball' effect.",
+        text: "The debt snowball method is a debt payoff strategy popularized online where you pay off your debts in order of smallest to largest balance, instead of by interest rate. As each debt is paid off, you roll the payment amount into the next debt.",
       },
     },
     {

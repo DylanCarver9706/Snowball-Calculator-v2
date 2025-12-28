@@ -1,7 +1,7 @@
 import { MetadataRoute } from "next";
 
 const siteUrl =
-  process.env.NEXT_PUBLIC_SITE_URL || "https://daveramseysnowball.com";
+  process.env.NEXT_PUBLIC_SITE_URL || "https://mydebtsnowball.com";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   return [

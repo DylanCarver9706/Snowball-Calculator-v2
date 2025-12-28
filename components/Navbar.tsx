@@ -23,6 +23,7 @@ import {
 } from "@mui/icons-material";
 import { UserButton, useUser } from "@clerk/nextjs";
 import Link from "next/link";
+import Image from "next/image";
 import AuthRedirect from "./AuthRedirect";
 
 const Navbar = () => {
@@ -55,9 +56,18 @@ const Navbar = () => {
         color: "white",
       }}
     >
-      <Typography variant="h6" sx={{ my: 2, px: 2, color: "white" }}>
-        My Debt Snowball
-      </Typography>
+      <Box sx={{ display: "flex", alignItems: "center", gap: 1, my: 2, px: 2 }}>
+        <Image
+          src="/icon.PNG"
+          alt="My Debt Snowball"
+          width={24}
+          height={24}
+          style={{ borderRadius: "4px" }}
+        />
+        <Typography variant="h6" sx={{ color: "white" }}>
+          My Debt Snowball
+        </Typography>
+      </Box>
       <List>
         {navItems.map((item) => (
           <ListItem
@@ -105,6 +115,13 @@ const Navbar = () => {
               gap: 1,
             }}
           >
+            <Image
+              src="/icon.PNG"
+              alt="My Debt Snowball"
+              width={32}
+              height={32}
+              style={{ borderRadius: "4px" }}
+            />
             My Debt Snowball
           </Typography>
 

@@ -19,6 +19,7 @@ import {
   Menu as MenuIcon,
   Calculate as CalculateIcon,
   Info as InfoIcon,
+  Feedback as FeedbackIcon,
 } from "@mui/icons-material";
 import { UserButton, useUser } from "@clerk/nextjs";
 import Link from "next/link";
@@ -41,6 +42,7 @@ const Navbar = () => {
       icon: <CalculateIcon />,
     },
     { text: "How It Works", href: "/how-it-works", icon: <InfoIcon /> },
+    { text: "Feedback", href: "/feedback", icon: <FeedbackIcon /> },
   ];
 
   const drawer = (

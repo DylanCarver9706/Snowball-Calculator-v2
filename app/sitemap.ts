@@ -29,6 +29,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "yearly",
       priority: 0.5,
     },
+    {
+      url: `${siteUrl}/feedback`,
+      lastModified: new Date(),
+      changeFrequency: "monthly",
+      priority: 0.7,
+    },
     // Note: /calculator is excluded from sitemap because it requires authentication
     // Search engines can still discover it via robots.txt, but it won't be prioritized
   ];

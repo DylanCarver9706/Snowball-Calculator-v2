@@ -4,8 +4,7 @@ const siteUrl =
   process.env.NEXT_PUBLIC_SITE_URL || "https://mydebtsnowball.com";
 
 export const homeMetadata: Metadata = {
-  title:
-    "My Debt Snowball - Free Debt Payoff Tool | Free Debt Calculator",
+  title: "My Debt Snowball - Free Debt Payoff Tool | Free Debt Calculator",
   description:
     "Free Debt Snowball Method calculator. Calculate your debt payoff strategy and get out of debt faster. Track your progress, see your debt-free date, and achieve financial freedom.",
   openGraph: {
@@ -98,8 +97,7 @@ export const termsOfServiceMetadata: Metadata = {
     "Read the Terms of Service for the My Debt Snowball. Understand the terms and conditions for using our free debt payoff calculator.",
   openGraph: {
     title: "Terms of Service - My Debt Snowball",
-    description:
-      "Read the Terms of Service for the My Debt Snowball.",
+    description: "Read the Terms of Service for the My Debt Snowball.",
     url: `${siteUrl}/terms-of-service`,
     siteName: "My Debt Snowball",
     images: [
@@ -124,8 +122,7 @@ export const privacyPolicyMetadata: Metadata = {
     "Read the Privacy Policy for the My Debt Snowball. Learn how we collect, use, and protect your information.",
   openGraph: {
     title: "Privacy Policy - My Debt Snowball",
-    description:
-      "Read the Privacy Policy for the My Debt Snowball.",
+    description: "Read the Privacy Policy for the My Debt Snowball.",
     url: `${siteUrl}/privacy-policy`,
     siteName: "My Debt Snowball",
     images: [
@@ -141,5 +138,31 @@ export const privacyPolicyMetadata: Metadata = {
   },
   alternates: {
     canonical: `${siteUrl}/privacy-policy`,
+  },
+};
+
+export const feedbackMetadata: Metadata = {
+  title: "Send Feedback - My Debt Snowball",
+  description:
+    "Share your feedback, report bugs, or suggest new features for My Debt Snowball. We'd love to hear from you!",
+  openGraph: {
+    title: "Send Feedback - My Debt Snowball",
+    description:
+      "Share your feedback, report bugs, or suggest new features for My Debt Snowball.",
+    url: `${siteUrl}/feedback`,
+    siteName: "My Debt Snowball",
+    images: [
+      {
+        url: `${siteUrl}/icon.PNG`,
+        width: 634,
+        height: 637,
+        alt: "Send Feedback",
+      },
+    ],
+    locale: "en_US",
+    type: "website",
+  },
+  alternates: {
+    canonical: `${siteUrl}/feedback`,
   },
 };

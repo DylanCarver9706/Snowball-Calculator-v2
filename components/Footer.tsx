@@ -68,6 +68,17 @@ const Footer = () => {
             >
               Privacy Policy
             </Button>
+            <Button
+              component={Link}
+              href="/feedback"
+              color="inherit"
+              sx={{
+                textTransform: "none",
+                color: "text.secondary",
+              }}
+            >
+              Feedback
+            </Button>
           </Stack>
         </Stack>
       </Container>

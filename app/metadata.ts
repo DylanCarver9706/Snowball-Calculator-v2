@@ -34,6 +34,14 @@ export const calculatorMetadata: Metadata = {
   title: "Dave Ramsey Snowball Calculator - Create Your Debt Payoff Plan",
   description:
     "Use our free debt snowball calculator to create a personalized debt payoff plan. Enter your debts, see your payment schedule, and discover when you'll be debt-free using the Dave Ramsey snowball method.",
+  robots: {
+    index: false,
+    follow: false,
+    googleBot: {
+      index: false,
+      follow: false,
+    },
+  },
   openGraph: {
     title: "Dave Ramsey Snowball Calculator - Create Your Debt Payoff Plan",
     description:

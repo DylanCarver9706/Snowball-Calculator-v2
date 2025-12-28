@@ -9,6 +9,15 @@ const nextConfig = {
   reactStrictMode: true,
   // Enable static page generation for better SEO
   output: "standalone",
+  async redirects() {
+    return [
+      {
+        source: "/calculate",
+        destination: "/calculator",
+        permanent: true, // 301 redirect for SEO
+      },
+    ];
+  },
 };
 
 module.exports = nextConfig;

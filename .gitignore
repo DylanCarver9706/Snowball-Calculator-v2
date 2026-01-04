@@ -39,3 +39,5 @@ next-env.d.ts
 # personal
 TODO.MD
 /scripts
+# Sentry Config File
+.env.sentry-build-plugin

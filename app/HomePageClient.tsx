@@ -42,6 +42,9 @@ export default function HomePageClient() {
     },
   ];
 
+  // test Sentry global error catching
+  // throw new Error("Test Sentry global error catching");
+
   const features = [
     "Easy debt entry",
     "Visual progress tracking",

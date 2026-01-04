@@ -7,7 +7,7 @@ frontend:
     build:
       commands:
         # Write private env vars (used server-side only)
-        - env | grep -e CLERK_SECRET_KEY -e TRELLO_API_KEY -e TRELLO_TOKEN -e TRELLO_GENERAL_LIST_ID -e TRELLO_BUG_LIST_ID -e TRELLO_ENHANCEMENT_LIST_ID -e RESEND_API_KEY -e RESEND_TO_EMAIL -e RESEND_FROM_EMAIL >> .env.production
+        - env | grep -e CLERK_SECRET_KEY -e TRELLO_API_KEY -e TRELLO_TOKEN -e TRELLO_GENERAL_LIST_ID -e TRELLO_BUG_LIST_ID -e TRELLO_ENHANCEMENT_LIST_ID -e RESEND_API_KEY -e RESEND_TO_EMAIL -e RESEND_FROM_EMAIL -e SENTRY_ORG -e SENTRY_PROJECT >> .env.production
 
         # Write public env vars (safe for client)
         - env | grep -e NEXT_PUBLIC_ >> .env.production

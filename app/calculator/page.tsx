@@ -25,7 +25,7 @@ export default function CalculatorPage() {
             Snowball Calculator
           </Typography>
           <Typography variant="h5" textAlign="center" sx={{ opacity: 0.9 }}>
-            Create your personalized debt payoff plan using the Debt Snowball Method
+            View your personalized debt payoff plan using the Debt Snowball Method
           </Typography>
         </Container>
       </Box>

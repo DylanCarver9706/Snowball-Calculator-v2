@@ -6,6 +6,7 @@ import type { Debt } from "@/lib/types";
 import {
   calculateSnowball,
   type DebtWithSchedule,
+  type SnowballCalculationResult,
 } from "@/lib/snowball-calculator";
 import {
   Box,
@@ -32,6 +33,9 @@ import {
 import DeleteIcon from "@mui/icons-material/Delete";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import confetti from "canvas-confetti";
+import DebtBalanceGraph from "@/components/DebtBalanceGraph";
+import FreedMinimumsGraph from "@/components/FreedMinimumsGraph";
+import PerDebtPayoffGraph from "@/components/PerDebtPayoffGraph";
 
 function getDefaultDebt(): Debt {
   return {
@@ -70,6 +74,7 @@ export function SnowballCalculator() {
     number | null
   >(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [isSaving, setIsSaving] = useState<boolean>(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState<boolean>(false);
   const [deleteIndex, setDeleteIndex] = useState<number | null>(null);
 
@@ -158,17 +163,20 @@ export function SnowballCalculator() {
     return [...debts].sort((a, b) => a.balance - b.balance);
   }, [debts]);
 
-  const calculation: DebtWithSchedule[] = useMemo(() => {
-    if (sortedDebts.length === 0) return [] as DebtWithSchedule[];
-    let snowballedResult = calculateSnowball(sortedDebts, monthlyContribution);
-    // console.log("snowballedResult", snowballedResult);
-    return snowballedResult;
+  const calculationResult: SnowballCalculationResult | null = useMemo(() => {
+    if (sortedDebts.length === 0) return null;
+    return calculateSnowball(sortedDebts, monthlyContribution);
   }, [sortedDebts, monthlyContribution]);
 
+  console.log("calculationResult", calculationResult);
+
+  const calculation: DebtWithSchedule[] = useMemo(() => {
+    return calculationResult?.debtSchedules || [];
+  }, [calculationResult]);
+
   const maxMonths = useMemo(() => {
-    if (calculation.length === 0) return 0;
-    return Math.max(...calculation.map((d) => d.months.length));
-  }, [calculation]);
+    return calculationResult?.debtFreeMonths || 0;
+  }, [calculationResult]);
 
   // Editing handlers
   const startEdit = () => {
@@ -193,17 +201,22 @@ export function SnowballCalculator() {
 
   const saveEdit = async () => {
     if (editDebts && editMonthlyContribution !== null) {
-      // Normalize debts to ensure 2 decimal precision
-      const normalizedDebts = editDebts.map(normalizeDebt);
-      // Sort debts: debts with balance > 0 first, then debts with balance 0 at bottom
-      const sorted = [...normalizedDebts].sort((a, b) => {
-        if (a.balance === 0 && b.balance !== 0) return 1;
-        if (a.balance !== 0 && b.balance === 0) return -1;
-        return a.balance - b.balance;
-      });
-      setDebts(sorted);
-      setMonthlyContribution(editMonthlyContribution);
-      await saveToMetadata(sorted, editMonthlyContribution);
+      setIsSaving(true);
+      try {
+        // Normalize debts to ensure 2 decimal precision
+        const normalizedDebts = editDebts.map(normalizeDebt);
+        // Sort debts: debts with balance > 0 first, then debts with balance 0 at bottom
+        const sorted = [...normalizedDebts].sort((a, b) => {
+          if (a.balance === 0 && b.balance !== 0) return 1;
+          if (a.balance !== 0 && b.balance === 0) return -1;
+          return a.balance - b.balance;
+        });
+        setDebts(sorted);
+        setMonthlyContribution(editMonthlyContribution);
+        await saveToMetadata(sorted, editMonthlyContribution);
+      } finally {
+        setIsSaving(false);
+      }
     }
     setEditDebts(null);
     setEditMonthlyContribution(null);
@@ -370,22 +383,37 @@ export function SnowballCalculator() {
               <Button
                 variant="contained"
                 onClick={saveEdit}
+                disabled={isSaving}
+                startIcon={
+                  isSaving ? (
+                    <CircularProgress size={16} color="inherit" />
+                  ) : null
+                }
                 sx={{
                   backgroundColor: "white",
                   color: "black",
                   "&:hover": { backgroundColor: "rgba(255,255,255,0.9)" },
+                  "&:disabled": {
+                    backgroundColor: "rgba(255,255,255,0.7)",
+                    color: "rgba(0,0,0,0.5)",
+                  },
                   width: { xs: "100%", sm: "auto" },
                 }}
               >
-                Save
+                {isSaving ? "Saving..." : "Save"}
               </Button>
               <Button
                 variant="contained"
                 onClick={cancelEdit}
+                disabled={isSaving}
                 sx={{
                   backgroundColor: "white",
                   color: "black",
                   "&:hover": { backgroundColor: "rgba(255,255,255,0.9)" },
+                  "&:disabled": {
+                    backgroundColor: "rgba(255,255,255,0.7)",
+                    color: "rgba(0,0,0,0.5)",
+                  },
                   width: { xs: "100%", sm: "auto" },
                 }}
               >
@@ -405,7 +433,7 @@ export function SnowballCalculator() {
                 width: { xs: "100%", sm: "auto" },
               }}
             >
-              Edit Table / Extra Payment
+              Edit Debts / Extra Payment
             </Button>
           )}
         </Stack>
@@ -437,22 +465,32 @@ export function SnowballCalculator() {
             </Typography>
             <Typography variant="h6" color="primary">
               $
-              {debts
-                .reduce((sum, b) => sum + Number(b.balance), 0)
-                .toLocaleString(undefined, { maximumFractionDigits: 2 })}
+              {calculationResult
+                ? calculationResult.totalDebt.toLocaleString(undefined, {
+                    maximumFractionDigits: 2,
+                  })
+                : debts
+                    .reduce((sum, b) => sum + Number(b.balance), 0)
+                    .toLocaleString(undefined, { maximumFractionDigits: 2 })}
             </Typography>
           </Box>
 
           {/* Extra Monthly Income Freed */}
           <Box>
             <Typography variant="subtitle2" color="textSecondary">
-              Monthly Debts
+              Monthly Payments
             </Typography>
             <Typography variant="h6" color="primary">
               $
-              {debts
-                .reduce((sum, b) => sum + Number(b.amount), 0)
-                .toLocaleString(undefined, { maximumFractionDigits: 2 })}{" "}
+              {calculationResult
+                ? calculationResult.monthlyDebts.toLocaleString(undefined, {
+                    maximumFractionDigits: 2,
+                  })
+                : debts
+                    .reduce((sum, b) => sum + Number(b.amount), 0)
+                    .toLocaleString(undefined, {
+                      maximumFractionDigits: 2,
+                    })}{" "}
               / month
             </Typography>
           </Box>
@@ -460,14 +498,19 @@ export function SnowballCalculator() {
           {/* Total Monthly Income Saved (current debts with 0 balance)*/}
           <Box>
             <Typography variant="subtitle2" color="textSecondary">
-              Monthly Debts Saved
+              Current Monthly Payments Saved
             </Typography>
             <Typography variant="h6" color="primary">
               $
-              {debts
-                .filter((b) => b.balance === 0)
-                .reduce((sum, b) => sum + Number(b.amount), 0)
-                .toLocaleString(undefined, { maximumFractionDigits: 2 })}
+              {calculationResult
+                ? calculationResult.currentDebtsSaved.toLocaleString(
+                    undefined,
+                    { maximumFractionDigits: 2 }
+                  )
+                : debts
+                    .filter((b) => b.balance === 0)
+                    .reduce((sum, b) => sum + Number(b.amount), 0)
+                    .toLocaleString(undefined, { maximumFractionDigits: 2 })}
               {" / month"}
             </Typography>
           </Box>
@@ -478,7 +521,9 @@ export function SnowballCalculator() {
               Time Until Debt Free
             </Typography>
             <Typography variant="h6" color="primary">
-              {calculation.length === 0
+              {calculationResult
+                ? calculationResult.debtFreeMonths
+                : calculation.length === 0
                 ? 0
                 : Math.max(
                     ...calculation.map(
@@ -495,6 +540,124 @@ export function SnowballCalculator() {
           </Box>
         </Stack>
       </Card>
+
+      {/* Payoff Order Section */}
+      {!editing && calculationResult && calculation.length > 0 && (
+        <Card
+          sx={{
+            mt: 3,
+            mb: 2,
+            p: { xs: 2, sm: 3 },
+            backgroundColor: "white",
+            border: "1px solid rgba(37,99,235,0.15)",
+            boxShadow: "none",
+          }}
+        >
+          <Typography
+            variant="h6"
+            sx={{
+              mb: 2,
+              color: "text.primary",
+              fontWeight: 600,
+            }}
+          >
+            Debt Snowball Payoff Order
+          </Typography>
+          <Box
+            sx={{
+              display: "grid",
+              gridTemplateColumns: {
+                xs: "1fr",
+                sm: "repeat(2, 1fr)",
+                md: "repeat(3, 1fr)",
+              },
+              gap: 2,
+            }}
+          >
+            {calculation
+              .map((debt, idx) => {
+                // Find the month when this debt is paid off
+                const payoffMonth = debt.months.findIndex(
+                  (month, i) =>
+                    month.remainingBalance === 0 &&
+                    (i === 0 || debt.months[i - 1].remainingBalance > 0)
+                );
+                return {
+                  debt,
+                  originalIndex: idx,
+                  payoffMonth: payoffMonth >= 0 ? payoffMonth + 1 : Infinity,
+                };
+              })
+              .filter((item) => item.debt.balance > 0) // Only show debts with balance > 0
+              .sort((a, b) => a.payoffMonth - b.payoffMonth) // Sort by payoff month
+              .map((item, orderIndex) => (
+                <Box
+                  key={item.originalIndex}
+                  sx={{
+                    display: "flex",
+                    alignItems: "flex-start",
+                    gap: 1.5,
+                    p: 2,
+                    borderRadius: 2,
+                    backgroundColor: "#f5f7ff",
+                    border: "1px solid rgba(37,99,235,0.1)",
+                    height: "100%",
+                    minHeight: 80,
+                    boxSizing: "border-box",
+                  }}
+                >
+                  <Box
+                    sx={{
+                      minWidth: 32,
+                      width: 32,
+                      height: 32,
+                      borderRadius: "50%",
+                      backgroundColor: "#667eea",
+                      color: "white",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      fontWeight: 700,
+                      fontSize: "0.875rem",
+                      flexShrink: 0,
+                    }}
+                  >
+                    {orderIndex + 1}
+                  </Box>
+                  <Box sx={{ flexGrow: 1, minWidth: 0 }}>
+                    <Typography
+                      variant="subtitle2"
+                      sx={{
+                        fontWeight: 600,
+                        mb: 0.5,
+                        wordBreak: "break-word",
+                        lineHeight: 1.3,
+                      }}
+                    >
+                      {item.debt.name}
+                    </Typography>
+                    <Typography
+                      variant="caption"
+                      color="text.secondary"
+                      sx={{ wordBreak: "break-word", lineHeight: 1.4 }}
+                    >
+                      Paid off in Month {item.payoffMonth}
+                    </Typography>
+                  </Box>
+                </Box>
+              ))}
+          </Box>
+        </Card>
+      )}
+
+      {/* Debt Balance Graph */}
+      {!editing && calculationResult && calculation.length > 0 && (
+        <>
+          <DebtBalanceGraph data={calculationResult.debtBalanceData} />
+          <FreedMinimumsGraph data={calculationResult.freedMinimumsData} />
+          <PerDebtPayoffGraph debtSchedules={calculationResult.debtSchedules} />
+        </>
+      )}
 
       {editing ? (
         <Card
@@ -827,6 +990,16 @@ export function SnowballCalculator() {
             boxShadow: "none",
           }}
         >
+          <Typography
+            variant="h6"
+            sx={{
+              mb: 2,
+              color: "text.primary",
+              fontWeight: 600,
+            }}
+          >
+            Payoff Schedule
+          </Typography>
           <Box sx={{ overflow: "auto", maxHeight: 800 }}>
             <Table
               size="small"
@@ -1037,10 +1210,12 @@ export function SnowballCalculator() {
               <>
                 Are you sure you want to delete{" "}
                 <strong>{editDebts[deleteIndex].name}</strong>? This action
-                cannot be undone.
+                cannot be undone. <br></br>
+                <br></br>You can also use <strong>Mark Paid Off</strong> if you
+                want to track this in <strong>Monthly Payments Saved</strong>
               </>
             ) : (
-              "Are you sure you want to delete this debt? This action cannot be undone."
+              "Are you sure you want to delete this debt? This action cannot be undone.\n You can also mark as paid off if you want to track this monthly payment in Monthly Payments Saved"
             )}
           </DialogContentText>
         </DialogContent>
@@ -1055,6 +1230,24 @@ export function SnowballCalculator() {
             autoFocus
           >
             Delete
+          </Button>
+          <Button
+            onClick={() => {
+              if (deleteIndex !== null) {
+                handleMarkPaidOff(deleteIndex);
+                cancelDeleteDebt();
+              }
+            }}
+            color="success"
+            variant="contained"
+            disabled={
+              deleteIndex === null ||
+              !editDebts ||
+              !editDebts[deleteIndex] ||
+              editDebts[deleteIndex].balance === 0
+            }
+          >
+            Mark Paid Off
           </Button>
         </DialogActions>
       </Dialog>

@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { homeMetadata } from "./metadata";
-import HomePageClient from "./HomePageClient";
+import HomePageClient from "../components/HomePageClient";
 import FAQStructuredData from "@/components/FAQStructuredData";
 
 export const metadata: Metadata = homeMetadata;

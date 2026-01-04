@@ -16,11 +16,33 @@ export interface DebtWithSchedule extends Debt {
   months: DebtMonth[];
 }
 
+// Chart data types
+export interface DebtBalanceDataPoint {
+  month: number;
+  totalBalance: number;
+}
+
+export interface FreedMinimumsDataPoint {
+  month: number;
+  freedMinimums: number;
+}
+
+// Return type for calculateSnowball
+export interface SnowballCalculationResult {
+  debtSchedules: DebtWithSchedule[];
+  totalDebt: number;
+  monthlyDebts: number;
+  currentDebtsSaved: number;
+  debtFreeMonths: number;
+  debtBalanceData: DebtBalanceDataPoint[];
+  freedMinimumsData: FreedMinimumsDataPoint[];
+}
+
 // Main snowball calculation
 export function calculateSnowball(
   debts: Debt[],
   monthlyExtra: number
-): DebtWithSchedule[] {
+): SnowballCalculationResult {
   // No sorting here; process debts in the order provided
   const debtSchedules: DebtWithSchedule[] = debts.map((debt) => ({
     ...debt,
@@ -29,9 +51,15 @@ export function calculateSnowball(
 
   // 3. Track freed minimums - initialize with debts that start at 0 balance
   let freedMinimums = 0;
+  const paidOffDebtsByMonth = new Map<number, number[]>(); // month -> array of debt indices paid off
   debtSchedules.forEach((debt, idx) => {
     if (debt.balance <= 0) {
       freedMinimums += debt.amount;
+      // Track debts that start at 0 balance as paid off at month 0
+      if (!paidOffDebtsByMonth.has(0)) {
+        paidOffDebtsByMonth.set(0, []);
+      }
+      paidOffDebtsByMonth.get(0)!.push(idx);
     }
   });
   let month = 0;
@@ -181,6 +209,12 @@ export function calculateSnowball(
       ) {
         localFreed += debt.amount;
         payoffMonth[j] = month;
+        // Track this debt as paid off in the current month (month + 1 for next month's data point)
+        const payoffMonthForData = month + 1;
+        if (!paidOffDebtsByMonth.has(payoffMonthForData)) {
+          paidOffDebtsByMonth.set(payoffMonthForData, []);
+        }
+        paidOffDebtsByMonth.get(payoffMonthForData)!.push(j);
       }
       // Rollover is only for the next debt in the same month
       available = thisRollover;
@@ -191,5 +225,75 @@ export function calculateSnowball(
     allPaidOff = balances.every((b) => b <= 0);
     month++;
   }
-  return debtSchedules;
+
+  // Calculate summary data
+  const totalDebt = debts.reduce((sum, debt) => sum + (debt.balance || 0), 0);
+  const monthlyDebts = debts.reduce((sum, debt) => sum + (debt.amount || 0), 0);
+  const currentDebtsSaved = debts
+    .filter((debt) => debt.balance === 0)
+    .reduce((sum, debt) => sum + (debt.amount || 0), 0);
+  const debtFreeMonths = Math.max(...debtSchedules.map((d) => d.months.length));
+
+  // Calculate debt balance data
+  const debtBalanceData: DebtBalanceDataPoint[] = [
+    {
+      month: 0,
+      totalBalance: Math.round(totalDebt * 100) / 100,
+    },
+  ];
+
+  for (let month = 0; month < debtFreeMonths; month++) {
+    const totalBalance = debtSchedules.reduce((sum, debt) => {
+      const monthData = debt.months[month];
+      return sum + (monthData?.remainingBalance || 0);
+    }, 0);
+    debtBalanceData.push({
+      month: month + 1,
+      totalBalance: Math.round(totalBalance * 100) / 100,
+    });
+  }
+
+  // Calculate freed minimums data using the tracked paidOffDebtsByMonth
+  let freedMinimumsTotal = 0;
+  const paidOffDebts = new Set<number>();
+
+  // Start with month 0 (Current) - count debts that start at 0 balance using tracked data
+  const month0PaidOff = paidOffDebtsByMonth.get(0) || [];
+  month0PaidOff.forEach((debtIdx) => {
+    freedMinimumsTotal += debtSchedules[debtIdx].amount;
+    paidOffDebts.add(debtIdx);
+  });
+
+  const freedMinimumsData: FreedMinimumsDataPoint[] = [
+    {
+      month: 0,
+      freedMinimums: Math.round(freedMinimumsTotal * 100) / 100,
+    },
+  ];
+
+  // For each month, calculate the cumulative freed minimums using tracked data
+  for (let month = 0; month < debtFreeMonths; month++) {
+    const monthPaidOff = paidOffDebtsByMonth.get(month + 1) || [];
+    monthPaidOff.forEach((debtIdx) => {
+      if (!paidOffDebts.has(debtIdx)) {
+        freedMinimumsTotal += debtSchedules[debtIdx].amount;
+        paidOffDebts.add(debtIdx);
+      }
+    });
+
+    freedMinimumsData.push({
+      month: month + 1,
+      freedMinimums: Math.round(freedMinimumsTotal * 100) / 100,
+    });
+  }
+
+  return {
+    debtSchedules,
+    totalDebt,
+    monthlyDebts,
+    currentDebtsSaved,
+    debtFreeMonths,
+    debtBalanceData,
+    freedMinimumsData,
+  };
 }

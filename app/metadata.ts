@@ -166,3 +166,37 @@ export const feedbackMetadata: Metadata = {
     canonical: `${siteUrl}/feedback`,
   },
 };
+
+export const onboardingMetadata: Metadata = {
+  title: "Get Started - My Debt Snowball",
+  description:
+    "Welcome to My Debt Snowball! Set up your debt information and start your journey to financial freedom.",
+  robots: {
+    index: false,
+    follow: false,
+    googleBot: {
+      index: false,
+      follow: false,
+    },
+  },
+  openGraph: {
+    title: "Get Started - My Debt Snowball",
+    description:
+      "Welcome to My Debt Snowball! Set up your debt information and start your journey to financial freedom.",
+    url: `${siteUrl}/onboarding`,
+    siteName: "My Debt Snowball",
+    images: [
+      {
+        url: `${siteUrl}/icon.PNG`,
+        width: 634,
+        height: 637,
+        alt: "Get Started",
+      },
+    ],
+    locale: "en_US",
+    type: "website",
+  },
+  alternates: {
+    canonical: `${siteUrl}/onboarding`,
+  },
+};

@@ -17,8 +17,7 @@ const siteUrl =
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default:
-      "My Debt Snowball - Free Debt Payoff Tool | Free Debt Calculator",
+    default: "My Debt Snowball - Free Debt Payoff Tool | Free Debt Calculator",
     template: "%s | My Debt Snowball",
   },
   description:

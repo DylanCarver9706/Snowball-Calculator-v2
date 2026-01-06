@@ -27,8 +27,8 @@ import {
   CheckCircle as CheckCircleIcon,
   ArrowForward as ArrowForwardIcon,
 } from "@mui/icons-material";
-import AuthRedirect from "@/components/AuthRedirect";
 
+import { SignUpButton } from "@clerk/nextjs";
 export default function HowItWorksPage() {
   const steps = [
     {
@@ -122,7 +122,11 @@ export default function HowItWorksPage() {
               </Typography>
 
               <Box sx={{ mt: 4, textAlign: "center" }}>
-                <AuthRedirect mode="signUp">
+                <SignUpButton
+                  mode="modal"
+                  forceRedirectUrl="/onboarding"
+                  signInForceRedirectUrl="/calculator"
+                >
                   <Button
                     variant="contained"
                     size="large"
@@ -131,7 +135,7 @@ export default function HowItWorksPage() {
                   >
                     Try the Calculator
                   </Button>
-                </AuthRedirect>
+                </SignUpButton>
               </Box>
             </Grid>
 
@@ -408,7 +412,11 @@ export default function HowItWorksPage() {
             Our calculator will help you create a personalized debt payoff plan
             using the snowball method.
           </Typography>
-          <AuthRedirect mode="signUp">
+          <SignUpButton
+            mode="modal"
+            forceRedirectUrl="/onboarding"
+            signInForceRedirectUrl="/calculator"
+          >
             <Button
               variant="contained"
               size="large"
@@ -425,7 +433,7 @@ export default function HowItWorksPage() {
             >
               Start Your Debt-Free Journey
             </Button>
-          </AuthRedirect>
+          </SignUpButton>
         </Container>
       </Box>
     </Box>

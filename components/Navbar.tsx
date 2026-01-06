@@ -21,10 +21,9 @@ import {
   Info as InfoIcon,
   Feedback as FeedbackIcon,
 } from "@mui/icons-material";
-import { UserButton, useUser } from "@clerk/nextjs";
+import { UserButton, useUser, SignInButton } from "@clerk/nextjs";
 import Link from "next/link";
 import Image from "next/image";
-import AuthRedirect from "./AuthRedirect";
 
 const Navbar = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -152,7 +151,11 @@ const Navbar = () => {
               {isSignedIn ? (
                 <UserButton />
               ) : (
-                <AuthRedirect>
+                <SignInButton
+                  mode="modal"
+                  forceRedirectUrl="/calculator"
+                  signUpForceRedirectUrl="/onboarding"
+                >
                   <Button
                     variant="contained"
                     color="primary"
@@ -164,7 +167,7 @@ const Navbar = () => {
                   >
                     Sign In
                   </Button>
-                </AuthRedirect>
+                </SignInButton>
               )}
             </Box>
           )}

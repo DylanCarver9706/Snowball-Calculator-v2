@@ -18,7 +18,7 @@ import {
 } from "@mui/icons-material";
 import Link from "next/link";
 import SnowballCarouselAnimation from "@/components/SnowballCarouselAnimation";
-import AuthRedirect from "@/components/AuthRedirect";
+import { SignUpButton } from "@clerk/nextjs";
 
 export default function HomePageClient() {
   const benefits = [
@@ -91,7 +91,11 @@ export default function HomePageClient() {
                 spacing={2}
                 sx={{ mb: 4 }}
               >
-                <AuthRedirect mode="signUp">
+                <SignUpButton
+                  mode="modal"
+                  forceRedirectUrl="/onboarding"
+                  signInForceRedirectUrl="/calculator"
+                >
                   <Button
                     variant="contained"
                     size="large"
@@ -107,7 +111,7 @@ export default function HomePageClient() {
                   >
                     Start Your Debt-Free Journey
                   </Button>
-                </AuthRedirect>
+                </SignUpButton>
                 <Button
                   component={Link}
                   href="/how-it-works"
@@ -226,7 +230,11 @@ export default function HomePageClient() {
             Join thousands of people who have used this method to get out of
             debt faster.
           </Typography>
-          <AuthRedirect mode="signUp">
+          <SignUpButton
+            mode="modal"
+            forceRedirectUrl="/onboarding"
+            signInForceRedirectUrl="/calculator"
+          >
             <Button
               variant="contained"
               size="large"
@@ -243,7 +251,7 @@ export default function HomePageClient() {
             >
               Get Started Now
             </Button>
-          </AuthRedirect>
+          </SignUpButton>
         </Container>
       </Box>
 
@@ -297,7 +305,11 @@ export default function HomePageClient() {
             Every day you wait is another day in debt. Start your journey to
             financial freedom today.
           </Typography>
-          <AuthRedirect mode="signUp">
+          <SignUpButton
+            mode="modal"
+            forceRedirectUrl="/onboarding"
+            signInForceRedirectUrl="/calculator"
+          >
             <Button
               variant="contained"
               size="large"
@@ -314,7 +326,7 @@ export default function HomePageClient() {
             >
               Start Now - It's Free
             </Button>
-          </AuthRedirect>
+          </SignUpButton>
         </Container>
       </Box>
     </Box>

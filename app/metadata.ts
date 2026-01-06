@@ -32,7 +32,7 @@ export const homeMetadata: Metadata = {
 export const calculatorMetadata: Metadata = {
   title: "My Debt Snowball - Create Your Debt Payoff Plan",
   description:
-    "Use our free debt snowball calculator to create a personalized debt payoff plan. Enter your debts, see your payment schedule, and discover when you'll be debt-free using the Debt Snowball Method.",
+    "Use our free debt snowball calculator to create a personalized debt payoff plan. Enter your debts, see your payment schedule with interactive graphs showing debt balance over time, freed minimums, and per-debt payoff schedules. Discover when you'll be debt-free using the Debt Snowball Method.",
   robots: {
     index: false,
     follow: false,
@@ -44,7 +44,7 @@ export const calculatorMetadata: Metadata = {
   openGraph: {
     title: "My Debt Snowball - Create Your Debt Payoff Plan",
     description:
-      "Use our free debt snowball calculator to create a personalized debt payoff plan using the Debt Snowball Method.",
+      "Use our free debt snowball calculator to create a personalized debt payoff plan with interactive graphs showing your debt balance over time, freed minimums, and per-debt payoff schedules using the Debt Snowball Method.",
     url: `${siteUrl}/calculator`,
     siteName: "My Debt Snowball",
     images: [

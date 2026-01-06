@@ -18,6 +18,7 @@ export default function robots(): MetadataRoute.Robots {
         disallow: [
           "/api/",
           "/calculator",
+          "/onboarding",
           "/sign-in",
           "/sign-up",
           "/manifest.json",

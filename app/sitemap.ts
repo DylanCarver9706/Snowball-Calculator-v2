@@ -35,7 +35,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "monthly",
       priority: 0.7,
     },
-    // Note: /calculator is excluded from sitemap because it requires authentication
-    // Search engines can still discover it via robots.txt, but it won't be prioritized
+    // Note: /calculator and /onboarding are excluded from sitemap because they require authentication
+    // Search engines can still discover them via robots.txt, but they won't be prioritized
   ];
 }

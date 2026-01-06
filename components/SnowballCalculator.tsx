@@ -326,10 +326,16 @@ export function SnowballCalculator() {
         >
           <Box sx={{ width: { xs: "100%", sm: "auto" } }}>
             <Stack
-              direction={{ xs: "row", sm: "row" }}
-              spacing={{ xs: 1, sm: 2 }}
-              alignItems={{ xs: "center", sm: "center" }}
-              justifyContent={{ xs: "center", sm: "flex-start" }}
+              direction={{
+                xs: editing ? "column" : "row",
+                sm: "row",
+              }}
+              spacing={{ xs: editing ? 1 : 1, sm: 2 }}
+              alignItems={{
+                xs: editing ? "flex-start" : "center",
+                sm: "center",
+              }}
+              justifyContent={{ xs: "flex-start", sm: "flex-start" }}
               flexWrap="nowrap"
               sx={{ width: "100%", overflow: "hidden" }}
             >
@@ -347,9 +353,10 @@ export function SnowballCalculator() {
                     )
                   }
                   inputProps={{ min: 0 }}
+                  fullWidth
                   sx={{
-                    minWidth: { xs: 70, sm: 140 },
-                    maxWidth: { xs: 70, sm: 200 },
+                    minWidth: { xs: "100%", sm: 140 },
+                    maxWidth: { xs: "100%", sm: 200 },
                     "& .MuiInputBase-input": { color: "white", fontSize: 18 },
                     "& .MuiOutlinedInput-notchedOutline": {
                       borderColor: "rgba(255,255,255,0.6)",
@@ -375,10 +382,13 @@ export function SnowballCalculator() {
           <Box sx={{ flexGrow: { xs: 0, sm: 1 } }} />
           {editing ? (
             <Stack
-              direction={{ xs: "column", sm: "row" }}
+              direction="row"
               spacing={1}
               flexWrap="wrap"
-              sx={{ width: { xs: "100%", sm: "auto" } }}
+              sx={{
+                width: { xs: "100%", sm: "auto" },
+                display: { xs: "none", sm: "flex" },
+              }}
             >
               <Button
                 variant="contained"
@@ -440,106 +450,108 @@ export function SnowballCalculator() {
       </Card>
 
       {/* Summary Section */}
-      <Card
-        sx={{
-          mt: 3,
-          mb: 2,
-          backgroundColor: "#f5f7ff",
-          border: "1px solid rgba(37,99,235,0.1)",
-          boxShadow: "none",
-        }}
-      >
-        <Stack
-          direction={{ xs: "column", sm: "row" }}
-          spacing={{ xs: 1, sm: 3 }}
+      {!editing && (
+        <Card
           sx={{
-            alignItems: { sm: "center" },
-            p: { xs: 2, sm: 3 },
-            justifyContent: { sm: "space-between" },
+            mt: 3,
+            mb: 2,
+            backgroundColor: "#f5f7ff",
+            border: "1px solid rgba(37,99,235,0.1)",
+            boxShadow: "none",
           }}
         >
-          {/* Total Debt */}
-          <Box>
-            <Typography variant="subtitle2" color="textSecondary">
-              Total Debt
-            </Typography>
-            <Typography variant="h6" color="primary">
-              $
-              {calculationResult
-                ? calculationResult.totalDebt.toLocaleString(undefined, {
-                    maximumFractionDigits: 2,
-                  })
-                : debts
-                    .reduce((sum, b) => sum + Number(b.balance), 0)
-                    .toLocaleString(undefined, { maximumFractionDigits: 2 })}
-            </Typography>
-          </Box>
-
-          {/* Extra Monthly Income Freed */}
-          <Box>
-            <Typography variant="subtitle2" color="textSecondary">
-              Monthly Payments
-            </Typography>
-            <Typography variant="h6" color="primary">
-              $
-              {calculationResult
-                ? calculationResult.monthlyDebts.toLocaleString(undefined, {
-                    maximumFractionDigits: 2,
-                  })
-                : debts
-                    .reduce((sum, b) => sum + Number(b.amount), 0)
-                    .toLocaleString(undefined, {
+          <Stack
+            direction={{ xs: "column", sm: "row" }}
+            spacing={{ xs: 1, sm: 3 }}
+            sx={{
+              alignItems: { sm: "center" },
+              p: { xs: 2, sm: 3 },
+              justifyContent: { sm: "space-between" },
+            }}
+          >
+            {/* Total Debt */}
+            <Box>
+              <Typography variant="subtitle2" color="textSecondary">
+                Total Debt
+              </Typography>
+              <Typography variant="h6" color="primary">
+                $
+                {calculationResult
+                  ? calculationResult.totalDebt.toLocaleString(undefined, {
                       maximumFractionDigits: 2,
-                    })}{" "}
-              / month
-            </Typography>
-          </Box>
+                    })
+                  : debts
+                      .reduce((sum, b) => sum + Number(b.balance), 0)
+                      .toLocaleString(undefined, { maximumFractionDigits: 2 })}
+              </Typography>
+            </Box>
 
-          {/* Total Monthly Income Saved (current debts with 0 balance)*/}
-          <Box>
-            <Typography variant="subtitle2" color="textSecondary">
-              Current Monthly Payments Saved
-            </Typography>
-            <Typography variant="h6" color="primary">
-              $
-              {calculationResult
-                ? calculationResult.currentDebtsSaved.toLocaleString(
-                    undefined,
-                    { maximumFractionDigits: 2 }
-                  )
-                : debts
-                    .filter((b) => b.balance === 0)
-                    .reduce((sum, b) => sum + Number(b.amount), 0)
-                    .toLocaleString(undefined, { maximumFractionDigits: 2 })}
-              {" / month"}
-            </Typography>
-          </Box>
+            {/* Extra Monthly Income Freed */}
+            <Box>
+              <Typography variant="subtitle2" color="textSecondary">
+                Monthly Payments
+              </Typography>
+              <Typography variant="h6" color="primary">
+                $
+                {calculationResult
+                  ? calculationResult.monthlyDebts.toLocaleString(undefined, {
+                      maximumFractionDigits: 2,
+                    })
+                  : debts
+                      .reduce((sum, b) => sum + Number(b.amount), 0)
+                      .toLocaleString(undefined, {
+                        maximumFractionDigits: 2,
+                      })}{" "}
+                / month
+              </Typography>
+            </Box>
 
-          {/* Months to Debt Free */}
-          <Box>
-            <Typography variant="subtitle2" color="textSecondary">
-              Time Until Debt Free
-            </Typography>
-            <Typography variant="h6" color="primary">
-              {calculationResult
-                ? calculationResult.debtFreeMonths
-                : calculation.length === 0
-                ? 0
-                : Math.max(
-                    ...calculation.map(
-                      (d) =>
-                        d.months.findIndex(
-                          (m, i) =>
-                            m.remainingBalance === 0 &&
-                            (i === 0 || d.months[i - 1].remainingBalance > 0)
-                        ) + 1
+            {/* Total Monthly Income Saved (current debts with 0 balance)*/}
+            <Box>
+              <Typography variant="subtitle2" color="textSecondary">
+                Current Monthly Payments Saved
+              </Typography>
+              <Typography variant="h6" color="primary">
+                $
+                {calculationResult
+                  ? calculationResult.currentDebtsSaved.toLocaleString(
+                      undefined,
+                      { maximumFractionDigits: 2 }
                     )
-                  )}
-              {" months"}
-            </Typography>
-          </Box>
-        </Stack>
-      </Card>
+                  : debts
+                      .filter((b) => b.balance === 0)
+                      .reduce((sum, b) => sum + Number(b.amount), 0)
+                      .toLocaleString(undefined, { maximumFractionDigits: 2 })}
+                {" / month"}
+              </Typography>
+            </Box>
+
+            {/* Months to Debt Free */}
+            <Box>
+              <Typography variant="subtitle2" color="textSecondary">
+                Time Until Debt Free
+              </Typography>
+              <Typography variant="h6" color="primary">
+                {calculationResult
+                  ? calculationResult.debtFreeMonths
+                  : calculation.length === 0
+                  ? 0
+                  : Math.max(
+                      ...calculation.map(
+                        (d) =>
+                          d.months.findIndex(
+                            (m, i) =>
+                              m.remainingBalance === 0 &&
+                              (i === 0 || d.months[i - 1].remainingBalance > 0)
+                          ) + 1
+                      )
+                    )}
+                {" months"}
+              </Typography>
+            </Box>
+          </Stack>
+        </Card>
+      )}
 
       {/* Payoff Order Section */}
       {!editing && calculationResult && calculation.length > 0 && (
@@ -833,6 +845,60 @@ export function SnowballCalculator() {
             >
               Add Debt +
             </Button>
+          </Box>
+
+          {/* Save / Cancel - Mobile */}
+          <Box
+            sx={{
+              display: { xs: "block", sm: "none" },
+              mt: 2.5,
+              p: 2,
+              borderRadius: 2,
+              background:
+                "linear-gradient(135deg, #667eea 0%,rgb(71, 94, 194) 100%)",
+            }}
+          >
+            <Stack spacing={1.5}>
+              <Button
+                variant="contained"
+                onClick={saveEdit}
+                disabled={isSaving}
+                startIcon={
+                  isSaving ? (
+                    <CircularProgress size={16} color="inherit" />
+                  ) : null
+                }
+                sx={{
+                  backgroundColor: "white",
+                  color: "black",
+                  "&:hover": { backgroundColor: "rgba(255,255,255,0.9)" },
+                  "&:disabled": {
+                    backgroundColor: "rgba(255,255,255,0.7)",
+                    color: "rgba(0,0,0,0.5)",
+                  },
+                  width: "100%",
+                }}
+              >
+                {isSaving ? "Saving..." : "Save"}
+              </Button>
+              <Button
+                variant="contained"
+                onClick={cancelEdit}
+                disabled={isSaving}
+                sx={{
+                  backgroundColor: "white",
+                  color: "black",
+                  "&:hover": { backgroundColor: "rgba(255,255,255,0.9)" },
+                  "&:disabled": {
+                    backgroundColor: "rgba(255,255,255,0.7)",
+                    color: "rgba(0,0,0,0.5)",
+                  },
+                  width: "100%",
+                }}
+              >
+                Cancel
+              </Button>
+            </Stack>
           </Box>
 
           {/* Desktop/tablet editor */}

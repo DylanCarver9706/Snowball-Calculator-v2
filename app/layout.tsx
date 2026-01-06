@@ -99,7 +99,8 @@ export default function RootLayout({
   return (
     <ClerkProvider>
       <html lang="en">
-        <body className={inter.className}>
+        {/* suppressHydrationWarning prevents client-only attrs (e.g. from browser extensions) from causing hydration errors */}
+        <body className={inter.className} suppressHydrationWarning>
           <ThemeRegistry>
             <CssBaseline />
             <StructuredData type="WebApplication" />
